@@ -28,6 +28,14 @@
   color: #61dafb;
 }
 
+body {
+  font-family: 'Nunito', sans-serif;
+  background-color: #f4f6f6;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

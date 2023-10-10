@@ -2,33 +2,47 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from "react-router-dom";
 import { renderMovieTitle, renderMovieGenres, renderStarsAsLink, renderBasicProperty } from '../utils/renderUtils';
 
-function MovieDetail() {
-    const [movieDetail, setMovieDetail] = useState({
-        title: '',
-        year: '',
-        director: '',
-        genres: [],
-        star_names: [],
-        star_ids: [],
-        rating: ''
-    });
+import '../assets/styles/header.css';
 
+function MovieDetail() {
+    const [movieDetail, setMovieDetail] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [searchParams] = useSearchParams();
     const movie_id = searchParams.get('query');
 
-    useEffect(() => {
-        if (!movie_id) return;
+    const fetchMovieDetails = async () => {
+        try {
+            const response = await fetch(`/moviemall_server_war_exploded/MovieDetailServlet?query=${movie_id}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setMovieDetail(data);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-        fetch(`/moviemall_server_war_exploded/MovieDetailServlet?query=${movie_id}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('ERROR: Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => setMovieDetail(data))
-            .catch(error => console.error('ERROR: Fetching the movie details:', error));
+    useEffect(() => {
+        if (movie_id) {
+            (async () => {
+                await fetchMovieDetails();
+            })();
+        } else {
+            setIsLoading(false);
+        }
     }, [movie_id]);
+
+    if (isLoading) {
+        return null;
+    }
+
+    if (error) {
+        return <p>Error: {error}</p>;
+    }
 
     return (
         <div>

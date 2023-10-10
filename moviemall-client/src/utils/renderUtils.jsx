@@ -1,20 +1,28 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import '../assets/styles/table.css';
+import '../assets/styles/header.css';
+
 // Renders a movie title as a link/text
 function renderMovieTitle(movieId, movieTitle, year = null, shouldLink = true) {
     if (!movieId || !movieTitle) return 'N/A';
 
     if (shouldLink) {
         return (
-            <Link className="movie-title-link"
-                  to={`/movie-detail?query=${movieId}`}>
+            <Link className="link" to={`/movie-detail?query=${movieId}`}>
                 {movieTitle}
             </Link>
         );
     }
 
-    return year ? `${movieTitle} (${year})` : movieTitle;
+    //return year ? `${movieTitle} (${year})` : movieTitle;
+    return (
+        <span>
+            {movieTitle}
+            {year && <span className="year-class"> ({year})</span>}
+        </span>
+    );
 }
 
 // Renders genres, with optional truncation
@@ -41,7 +49,7 @@ function renderStarsAsLink(starNames, starIds, baseStarLink, truncate = false, n
         const starId = displayedStarIds[starIndex];
         return (
             <React.Fragment key={starIndex}>
-                <Link className="star-name-link"
+                <Link className="link"
                       to={`${baseStarLink}?query=${starId}`}>
                     {starName}
                 </Link>
@@ -56,7 +64,12 @@ function renderStarsAsLink(starNames, starIds, baseStarLink, truncate = false, n
 
 function renderStarAsHeader(starName, starBirthYear) {
     if (!starName) return 'N/A';
-    return `${starName} (${starBirthYear || 'N/A'})`;
+    return (
+        <span>
+            {starName}
+            {starBirthYear && <span className={"year-class"}>({starBirthYear})</span>}
+        </span>
+    )
 }
 
 // Renders a basic property

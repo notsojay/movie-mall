@@ -70,17 +70,3 @@ public class StarAdapter {
         return new JSONObject(jsonStr);
     }
 }
-
-
-//            "movie_title_id_pairs", (star, value) -> {
-//                List<String> titles = new ArrayList<>();
-//                List<String> ids = new ArrayList<>();
-//
-//                for (String titleIdPair : value.split(",")) {
-//                    String[] parts = titleIdPair.split("\\|");
-//                    titles.add(parts[0]);
-//                    ids.add(encodeToBase64(parts[1]));
-//                }
-//                star.setMovieTitles(titles);
-//                star.setMovieIds(ids);
-//            },

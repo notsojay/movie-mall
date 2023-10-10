@@ -1,6 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import {Link, useSearchParams} from 'react-router-dom';
-import {renderStarAsHeader, renderMovieTitle, renderBasicProperty} from '../utils/renderUtils';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { renderStarAsHeader, renderMovieTitle, renderBasicProperty } from '../utils/renderUtils';
+
+import '../assets/styles/table.css';
+import '../assets/styles/header.css';
 
 function StarDetail() {
     const [starDetail, setStarDetail] = useState({
@@ -11,22 +14,43 @@ function StarDetail() {
         movie_directors: [],
         movie_release_years: []
     });
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [searchParams] = useSearchParams();
     const star_id = searchParams.get('query');
 
-    useEffect(() => {
-        if (!star_id) return;
+    const fetchStarDetails = async () => {
+        try {
+            const response = await fetch(`/moviemall_server_war_exploded/StarDetailServlet?query=${star_id}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setStarDetail(data);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-        fetch(`/moviemall_server_war_exploded/StarDetailServlet?query=${star_id}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('ERROR: Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => setStarDetail(data))
-            .catch(error => console.error('ERROR: Fetching the star details:', error))
+    useEffect(() => {
+        (async () => {
+            if (star_id) {
+                await fetchStarDetails();
+            } else {
+                setIsLoading(false);
+            }
+        })();
     }, [star_id]);
+
+    if (isLoading) {
+        return null;
+    }
+
+    if (error) {
+        return <p>Error: {error}</p>;
+    }
 
     return (
         <div>
@@ -46,17 +70,11 @@ function StarDetail() {
                             </thead>
                             <tbody>
                                 {starDetail.movie_titles.map((title, index) => (
-                                        <tr key={index}>
-                                            <td>
-                                                {renderMovieTitle(starDetail.movie_ids[index], title)}
-                                            </td>
-                                            <td>
-                                                {renderBasicProperty(starDetail.movie_release_years[index])}
-                                            </td>
-                                            <td>
-                                                {renderBasicProperty(starDetail.movie_directors[index])}
-                                            </td>
-                                        </tr>
+                                    <tr key={index}>
+                                        <td>{renderMovieTitle(starDetail.movie_ids[index], title)}</td>
+                                        <td>{renderBasicProperty(starDetail.movie_release_years[index])}</td>
+                                        <td>{renderBasicProperty(starDetail.movie_directors[index])}</td>
+                                    </tr>
                                 ))}
                             </tbody>
                         </table>
