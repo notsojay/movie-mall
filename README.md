@@ -78,8 +78,6 @@ Backend Servlets provide endpoints to get detailed information about movies and 
 
 ### Components:
 - **Navbar**: Navigation bar for easy access to all features.
-- **Movie Card**: Displays a short summary of the movie, including its poster.
-- **Star Card**: Displays a short summary of the star, including a photo.
 
 ## Setup and Installation
 1. Ensure you have Java 11 or higher installed.
