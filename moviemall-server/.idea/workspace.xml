@@ -10,7 +10,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="087f0f90-c779-4c96-8a7e-7f21ccd1d7f4" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/../moviemall-client/src/views/MovieDetail.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../moviemall-client/src/views/MovieDetail.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -195,7 +194,7 @@
       <workItem from="1696559259416" duration="1559000" />
       <workItem from="1696560932697" duration="53529000" />
       <workItem from="1696817780786" duration="25817000" />
-      <workItem from="1697127091324" duration="689000" />
+      <workItem from="1697127091324" duration="1624000" />
     </task>
     <servers />
   </component>
