@@ -67,7 +67,7 @@ function renderStarAsHeader(starName, starBirthYear) {
     return (
         <span>
             {starName}
-            {starBirthYear && <span className={"year-class"}>({starBirthYear})</span>}
+            <span className="year-class">({starBirthYear ?? 'N/A'})</span>
         </span>
     )
 }

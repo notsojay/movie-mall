@@ -5,6 +5,7 @@ function Navbar() {
     return (
         <div className="navbar">
             <Link to="/movie-mall">Home</Link>
+            <Link to="/movie-mall">Top 20 Movies</Link>
         </div>
     );
 }
