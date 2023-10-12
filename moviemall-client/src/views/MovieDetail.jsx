@@ -5,7 +5,15 @@ import { renderMovieTitle, renderMovieGenres, renderStarsAsLink, renderBasicProp
 import '../assets/styles/header.css';
 
 function MovieDetail() {
-    const [movieDetail, setMovieDetail] = useState(null);
+    const [movieDetail, setMovieDetail] = useState({
+        title: '',
+        year: '',
+        director: '',
+        genres: [],
+        star_names: [],
+        star_ids: [],
+        rating: ''
+    });
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchParams] = useSearchParams();
