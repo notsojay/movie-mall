@@ -26,6 +26,11 @@ Backend Servlets provide endpoints to get detailed information about movies and 
 3. **Adapters**: Transforms data between database result sets and Java objects. Additionally, provides utilities for JSON conversion.
 
 #### Servlets:
+- [**MovieListServlet**](#movielistservlet):
+  - Lists top-rated movies.
+  - Path: /MovieListServlet
+  - Method: GET
+  - Response: A JSON array containing a list of the top 20 movies, ordered by their ratings.
 - [**MovieDetailServlet**](#moviedetailservlet):
   - Fetches and provides detailed information about a specific movie.
   - Path: /MovieDetailServlet
@@ -33,11 +38,6 @@ Backend Servlets provide endpoints to get detailed information about movies and 
   - Parameters: query - A Base64 encoded movie ID.
   - Response: A detailed JSON object representing a single movie.
   - Errors: Returns a 500 error with a descriptive message if the movie is not found or there's an invalid URL.
-- [**MovieListServlet**](#movielistservlet):
-  - Lists top-rated movies.
-  - Path: /MovieListServlet
-  - Method: GET
-  - Response: A JSON array containing a list of the top 20 movies, ordered by their ratings.
 - [**StarDetailServlet**](#stardetailservlet):
   - Fetches and provides detailed information about a particular star.
   - Path: /StarDetailServlet
@@ -90,8 +90,8 @@ Backend Servlets provide endpoints to get detailed information about movies and 
 6. Navigate to the frontend directory and open `index.html` in a web browser.
 
 ## APIs
-- [**GET** `/MovieDetailServlet?query=<movie_id>`](#moviedetailservlet): Fetch detailed information about a specific movie.
 - [**GET** `/MovieListServlet`](#movielistservlet): List top-rated movies.
+- [**GET** `/MovieDetailServlet?query=<movie_id>`](#moviedetailservlet): Fetch detailed information about a specific movie.
 - [**GET** `/StarDetailServlet?query=<star_id>`](#stardetailservlet): Fetch detailed information about a specific star.
 
 ## Contributors
