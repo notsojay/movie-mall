@@ -94,4 +94,4 @@ Backend Servlets provide endpoints to get detailed information about movies and 
 
 ## Contributors
 - Jihao Liang
-- 
+- Xiaohua Zhang
