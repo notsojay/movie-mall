@@ -10,7 +10,7 @@ function MovieList() {
 
     const fetchMovies = async () => {
         try {
-            const response = await fetch('/moviemall_server_war_exploded/MovieListServlet');
+            const response = await fetch('/moviemall-server/MovieListServlet');
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }

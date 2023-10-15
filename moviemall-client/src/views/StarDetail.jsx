@@ -21,7 +21,7 @@ function StarDetail() {
 
     const fetchStarDetails = async () => {
         try {
-            const response = await fetch(`/moviemall_server_war_exploded/StarDetailServlet?query=${star_id}`);
+            const response = await fetch(`/moviemall-server/StarDetailServlet?query=${star_id}`);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
