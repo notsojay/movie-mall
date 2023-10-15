@@ -1,5 +1,7 @@
 # MovieMall Web Application
 
+[👉 Click here to visit the MovieMall Website! 👈](http://18.222.89.9:8080/movie-mall/)
+
 ## Table of Contents
 - [Overview](#overview)
 - [Backend Services](#backend-services)
