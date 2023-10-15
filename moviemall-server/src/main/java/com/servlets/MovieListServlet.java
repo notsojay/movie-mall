@@ -49,12 +49,11 @@ public class MovieListServlet extends AbstractServletBase {
                     r.rating
                 FROM movies m
                 LEFT JOIN ratings r ON m.id = r.movieId
-                ORDER BY r.rating DESC
+                ORDER BY r.rating DESC, m.title ASC
                 LIMIT 20
             ) AS subquery
             LEFT JOIN movies m ON m.id = subquery.movie_id
-            GROUP BY subquery.movie_id, subquery.rating
-            ORDER BY subquery.rating DESC;
+            ORDER BY subquery.rating DESC, m.title ASC;              
             """;
 
     @Override

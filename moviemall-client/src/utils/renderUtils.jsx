@@ -16,11 +16,10 @@ function renderMovieTitle(movieId, movieTitle, year = null, shouldLink = true) {
         );
     }
 
-    //return year ? `${movieTitle} (${year})` : movieTitle;
     return (
         <span>
             {movieTitle}
-            {year && <span className="year-class"> ({year})</span>}
+            <span className="year-class">({year ?? 'N/A'})</span>
         </span>
     );
 }
