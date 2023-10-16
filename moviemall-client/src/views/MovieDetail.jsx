@@ -71,8 +71,8 @@ function MovieDetail() {
                         <tbody>
                             <tr key={movie_id}>
                                 <td>{renderBasicProperty(movieDetail.director)}</td>
-                                <td>{renderMovieGenres(movieDetail.genres, false)}</td>
-                                <td>{renderStarsAsLink(movieDetail.star_names, movieDetail.star_ids, '/star-detail', true, 3)}</td>
+                                <td>{renderMovieGenres(movieDetail.genres)}</td>
+                                <td>{renderStarsAsLink(movieDetail.star_names, movieDetail.star_ids, '/star-detail')}</td>
                                 <td>{renderBasicProperty(movieDetail.rating)}</td>
                             </tr>
                         </tbody>
