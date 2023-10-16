@@ -95,5 +95,5 @@ Backend Servlets provide endpoints to get detailed information about movies and 
 - [**GET** `/StarDetailServlet?query=<star_id>`](#stardetailservlet): Fetch detailed information about a specific star.
 
 ## Contributors
-- Jihao Liang
+- Jiahao Liang
 - Xiaohua Zhang
