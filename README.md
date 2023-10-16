@@ -98,10 +98,9 @@ Backend Servlets provide endpoints to get detailed information about movies and 
 
 ## Contributors
 Jiahao Liang
-- Utilize React to modularize the web servlet, segmenting the application based on specific functionalities. Develop the frontend code to enhance the website's aesthetic appeal.   
-  Create the demo video.
+- Utilize React to modularize the web servlet, segmenting the application based on specific functionalities. Develop the frontend code to enhance the website's aesthetic appeal. Create the demo video.
   
 Xiaohua Zhang
-- Implement the web servlet and draft SQL queries for backend logic. Conduct comprehensive website testing to ensure optimal functionality.
+- Implement the web servlet and draft SQL queries for backend logic. Conduct comprehensive website testing to ensure optimal functionality and the satisfaction of project requirement.
   
   
