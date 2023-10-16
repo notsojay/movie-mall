@@ -97,5 +97,10 @@ Our robust backend leverages Servlets to provide endpoints for extracting compre
 - [**GET** `/StarDetailServlet?query=<star_id>`](#stardetailservlet): Illuminate the life of a star.
 
 ## 🤝 Contributors
-- **Jiahao Liang**
-- **Xiaohua Zhang**
+- **Jiahao Liang**：
+    - Utilize React to modularize the web servlet, segmenting the application based on specific functionalities.
+    - Develop the frontend code to enhance the website's aesthetic appeal.
+    - Create the demo video.
+- **Xiaohua Zhang**：
+  - Implement the web servlet and draft SQL queries for backend logic.
+  - Conduct comprehensive website testing to ensure optimal functionality and the satisfaction of project requirement.
