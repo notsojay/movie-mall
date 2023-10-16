@@ -3,11 +3,11 @@ import MovieList from './views/MovieList';
 import MovieDetail from './views/MovieDetail';
 import StarDetail from './views/StarDetail';
 import Navbar from './components/Navbar'
-import {BrowserRouter as Router, Navigate, Route, Routes} from 'react-router-dom';
+import {HashRouter, Navigate, Route, Routes} from 'react-router-dom';
 
 function App() {
     return (
-        <Router>
+        <HashRouter>
             <Navbar />
             <Routes>
                 <Route path="/movie-mall" element={<MovieList />} />
@@ -15,7 +15,7 @@ function App() {
                 <Route path="/star-detail" element={<StarDetail />} />
                 <Route path="*" element={<Navigate to="/movie-mall" replace />} />
             </Routes>
-        </Router>
+        </HashRouter>
     );
 }
 

@@ -19,7 +19,7 @@ function renderMovieTitle(movieId, movieTitle, year = null, shouldLink = true) {
     return (
         <span>
             {movieTitle}
-            <span className="year-class">({year ?? 'N/A'})</span>
+            <span className="year-class">(Release Year: {year ?? 'N/A'})</span>
         </span>
     );
 }
@@ -66,7 +66,7 @@ function renderStarAsHeader(starName, starBirthYear) {
     return (
         <span>
             {starName}
-            <span className="year-class">({starBirthYear ?? 'N/A'})</span>
+            <span className="year-class">(Date Of Birth: {starBirthYear ?? 'N/A'})</span>
         </span>
     )
 }
