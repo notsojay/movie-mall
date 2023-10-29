@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { renderStarAsHeader, renderMovieTitle, renderBasicProperty } from '../utils/renderUtils';
-
+import React, {useEffect, useState} from 'react';
+import {useSearchParams} from 'react-router-dom';
+import {API_PATH} from "../config/servletPaths";
+import axios from "axios";
+import {renderStarAsHeader} from '../utils/starRenderers';
+import {renderBasicProperty, renderMovieTitleAsLink} from '../utils/movieRenderers';
 import '../assets/styles/table.css';
 import '../assets/styles/header.css';
-
+import '../assets/styles/link.css';
+import {APP_ROUTES} from "../config/appRoutes";
+import {fetchData} from "../utils/apiCaller";
 function StarDetail() {
     const [starDetail, setStarDetail] = useState({
         star_name: '',
@@ -19,29 +23,11 @@ function StarDetail() {
     const [searchParams] = useSearchParams();
     const star_id = searchParams.get('query');
 
-    const fetchStarDetails = async () => {
-        try {
-            const response = await fetch(`/moviemall-server/StarDetailServlet?query=${star_id}`);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            setStarDetail(data);
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
     useEffect(() => {
-        (async () => {
-            if (star_id) {
-                await fetchStarDetails();
-            } else {
-                setIsLoading(false);
-            }
-        })();
+        fetchData(API_PATH.STAR_DETAIL, { query: star_id }, "Error fetching star details")
+            .then(data => setStarDetail(data))
+            .catch(err => setError(err.message))
+            .finally(() => setIsLoading(false));
     }, [star_id]);
 
     if (isLoading) {
@@ -71,7 +57,7 @@ function StarDetail() {
                             <tbody>
                                 {starDetail.movie_titles.map((title, index) => (
                                     <tr key={index}>
-                                        <td>{renderMovieTitle(starDetail.movie_ids[index], title)}</td>
+                                        <td>{renderMovieTitleAsLink(starDetail.movie_ids[index], title, APP_ROUTES.MOVIE_DETAIL)}</td>
                                         <td>{renderBasicProperty(starDetail.movie_release_years[index])}</td>
                                         <td>{renderBasicProperty(starDetail.movie_directors[index])}</td>
                                     </tr>

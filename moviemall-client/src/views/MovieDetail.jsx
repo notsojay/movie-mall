@@ -1,8 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { useSearchParams, Link } from "react-router-dom";
-import { renderMovieTitle, renderMovieGenres, renderStarsAsLink, renderBasicProperty } from '../utils/renderUtils';
+import React, {useState, useEffect} from 'react';
+import {useSearchParams} from "react-router-dom";
+import {renderMovieTitleAsHeader, renderMovieGenresAsLink, renderBasicProperty} from '../utils/movieRenderers';
+import {renderStarsAsLink} from '../utils/starRenderers';
+import {API_PATH} from "../config/servletPaths";
+import {APP_ROUTES} from "../config/appRoutes";
+import {fetchData} from "../utils/apiCaller";
 
+import '../assets/styles/table.css';
 import '../assets/styles/header.css';
+import '../assets/styles/link.css';
 
 function MovieDetail() {
     const [movieDetail, setMovieDetail] = useState({
@@ -19,29 +25,11 @@ function MovieDetail() {
     const [searchParams] = useSearchParams();
     const movie_id = searchParams.get('query');
 
-    const fetchMovieDetails = async () => {
-        try {
-            const response = await fetch(`/moviemall-server/MovieDetailServlet?query=${movie_id}`);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            setMovieDetail(data);
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
     useEffect(() => {
-        if (movie_id) {
-            (async () => {
-                await fetchMovieDetails();
-            })();
-        } else {
-            setIsLoading(false);
-        }
+        fetchData(API_PATH.MOVIE_DETAIL, { query: movie_id}, "Error fetching star details")
+            .then(data => setMovieDetail(data))
+            .catch(err => setError(err.message))
+            .finally(() => setIsLoading(false));
     }, [movie_id]);
 
     if (isLoading) {
@@ -57,7 +45,7 @@ function MovieDetail() {
             {movieDetail?.title ? (
                 <React.Fragment>
                     <h1>
-                        {renderMovieTitle(movie_id, movieDetail.title, movieDetail.year, false)}
+                        {renderMovieTitleAsHeader(movieDetail.title, movieDetail.year)}
                     </h1>
                     <table>
                         <thead>
@@ -71,8 +59,8 @@ function MovieDetail() {
                         <tbody>
                             <tr key={movie_id}>
                                 <td>{renderBasicProperty(movieDetail.director)}</td>
-                                <td>{renderMovieGenres(movieDetail.genres)}</td>
-                                <td>{renderStarsAsLink(movieDetail.star_names, movieDetail.star_ids, '/star-detail')}</td>
+                                <td>{renderMovieGenresAsLink(movieDetail.genres, APP_ROUTES.MOVIE_LIST, true, 3)}</td>
+                                <td>{renderStarsAsLink(movieDetail.star_names, movieDetail.star_ids, APP_ROUTES.STAR_DETAIL)}</td>
                                 <td>{renderBasicProperty(movieDetail.rating)}</td>
                             </tr>
                         </tbody>

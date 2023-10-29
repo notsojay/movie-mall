@@ -1,4 +1,4 @@
-package com.model;
+package com.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -24,6 +24,9 @@ public class MovieEntity {
     private List<String> starNames = null;
 
     private Float rating = null;
+
+    @JsonProperty("total_records")
+    private Integer totalRecords;
 
     public MovieEntity() {
 
@@ -91,5 +94,13 @@ public class MovieEntity {
 
     public void setRating(Float rating) {
         this.rating = rating;
+    }
+
+    public Integer getTotalRecords() {
+        return totalRecords;
+    }
+
+    public void setTotalRecords(Integer totalRecords) {
+        this.totalRecords = totalRecords;
     }
 }

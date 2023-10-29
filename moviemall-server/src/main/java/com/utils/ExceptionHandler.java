@@ -1,5 +1,6 @@
 package com.utils;
 
+import java.sql.SQLSyntaxErrorException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -28,12 +29,23 @@ public class ExceptionHandler {
         EXCEPTION_MAPPINGS.put(IllegalArgumentException.class, new ErrorResponse(HttpServletResponse.SC_BAD_REQUEST, "Invalid request"));
         EXCEPTION_MAPPINGS.put(IOException.class, new ErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server communication error"));
         EXCEPTION_MAPPINGS.put(ServletException.class, new ErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Servlet error"));
+        EXCEPTION_MAPPINGS.put(SQLSyntaxErrorException.class, new ErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "SQL syntax error"));
     }
 
+//    public void handleException(HttpServletResponse response, Exception e) {
+//        LOGGER.log(Level.SEVERE, "Error: " + e.getClass().getName() + " - " + e.getMessage(), e);
+//        ErrorResponse errorResponse = EXCEPTION_MAPPINGS.getOrDefault(e.getClass(), new ErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unknown server error"));
+//        errorResponse.send(response);
+//    }
     public void handleException(HttpServletResponse response, Exception e) {
         LOGGER.log(Level.SEVERE, "Error: " + e.getClass().getName() + " - " + e.getMessage(), e);
-        ErrorResponse errorResponse = EXCEPTION_MAPPINGS.getOrDefault(e.getClass(), new ErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unknown server error"));
-        errorResponse.send(response);
+        if(EXCEPTION_MAPPINGS.containsKey(e.getClass())) {
+            ErrorResponse errorResponse = EXCEPTION_MAPPINGS.get(e.getClass());
+            errorResponse.send(response);
+        } else {
+            LOGGER.log(Level.SEVERE, "No mapping found for exception: " + e.getClass().getName());
+            new ErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unknown server error").send(response);
+        }
     }
 
     private static class ErrorResponse {

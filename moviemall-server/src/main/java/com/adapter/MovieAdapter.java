@@ -3,12 +3,11 @@ package com.adapter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.model.MovieEntity;
+import com.models.MovieEntity;
 
 import org.json.JSONObject;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
@@ -29,6 +28,8 @@ public class MovieAdapter {
             "director", MovieEntity::setDirector,
 
             "genres", (movie, value) -> movie.setGenres(Arrays.asList(value.split(","))),
+
+            "total_records", (movie, value) -> movie.setTotalRecords(Integer.parseInt(value)),
 
             "star_name_id_pairs", (movie, value) -> {
                 List<String> names = new ArrayList<>();
@@ -67,7 +68,7 @@ public class MovieAdapter {
         return movie;
     }
 
-    public static JSONObject convertMovieEntityToJson(MovieEntity movie) throws JsonProcessingException {
+    public static JSONObject convertMovieDtoToJson(MovieEntity movie) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         String jsonStr = mapper.writeValueAsString(movie);
