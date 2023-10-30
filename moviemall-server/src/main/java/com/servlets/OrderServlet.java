@@ -51,6 +51,9 @@ public class OrderServlet extends AbstractServletBase {
             String cardNumber = json.getString("cardNumber");
             String expiryDate = json.getString("expiryDate");
 
+            logger.info("\nfirstName: " + firstName
+            + "\nlastName: " + lastName + "\ncardNumber: " + cardNumber + "\n " + expiryDate + "\n");
+
             Integer customerId = queryFrom_moviedb(
                     conn,
                     SQL_QUERY,
@@ -94,7 +97,7 @@ public class OrderServlet extends AbstractServletBase {
 
     public void insertSale(Connection conn, int customerId, String movieId, LocalDate saleDate, int quantity) throws SQLException {
         movieId = decodeFromBase64(movieId);
-        logger.info("\ncustomer_id: " +  customerId + "\nmovie_id: " + movieId + "\nsale_date: " + saleDate + "\n quantity: " + quantity + '\n');
+        logger.info("\ncustomerId: " +  customerId + "\nmovieId: " + movieId + "\nsaleDate: " + saleDate + "\n quantity: " + quantity + '\n');
         final String SQL_INSERT = "INSERT INTO sales (customerId, moviesId, saleDate, quantity) VALUES (?, ?, ?, ?)";
         updateIn_moviedb(conn, SQL_INSERT,
                 updateCount -> {if (updateCount != 1) throw new SQLException("Insert sale failed");},
