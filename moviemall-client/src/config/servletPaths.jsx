@@ -1,4 +1,4 @@
-const BASE_URL = '/moviemall_server_war_exploded';
+const BASE_URL = '/moviemall-server';
 
 export const API_PATH = {
     AUTHENTICATION: `${BASE_URL}/AuthenticationServlet`,
