@@ -32,7 +32,7 @@ public class OrderServlet extends AbstractServletBase {
             SELECT
                 c.id AS customer_id,
                 COUNT(*) AS count
-            FROM creditCards cc
+            FROM creditcards cc
             INNER JOIN customers c ON c.creditCardId = cc.id
             WHERE cc.firstName = ?
               AND cc.lastName = ?
