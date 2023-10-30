@@ -67,7 +67,7 @@ export const PaginationButtons = (props) => {
                     </div>
                 </div>
                 <div className="buttons">
-                    {totalPages >= 1 ? (
+
                         <>
                             <button
                                 className="page-custom-button"
@@ -84,7 +84,7 @@ export const PaginationButtons = (props) => {
                                 Next
                             </button>
                         </>
-                    ) : null}
+
                 </div>
             </div>
         </div>

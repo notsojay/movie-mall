@@ -30,7 +30,6 @@ export const postData = async (endpoint, data, includeCookies = false, errorDesc
     }
 };
 
-
 export const addToCart = async (movieId, movieTitle, moviePrice) => {
     try {
         const response = await postData(API_PATH.SHOPPING_CART, {
@@ -41,7 +40,7 @@ export const addToCart = async (movieId, movieTitle, moviePrice) => {
         }, false, 'Error adding movie to cart');
 
         if (response && response.status === 'success') {
-            console.log('Movie added to cart successfully');
+            console.log('Movie updated to cart successfully');
         } else {
             console.error('Failed to add movie to cart');
         }

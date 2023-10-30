@@ -54,24 +54,31 @@ public class ShoppingCartServlet extends AbstractServletBase {
                 int newQuantity = existingCartItem.getQuantity() + cartItem.getQuantity();
                 if (newQuantity > 0) {
                     existingCartItem.setQuantity(newQuantity);
-                    jsonResponse = CustomerAdapter.convertStatusResponseToJson("success", "Cart updated successfully");
-                } else if (newQuantity == 0) {
-                    cart.remove(cartItem.getMovieId());
-                    jsonResponse = CustomerAdapter.convertStatusResponseToJson("success", "Movie removed from cart successfully");
                 } else {
-                    jsonResponse = CustomerAdapter.convertStatusResponseToJson("error", "Invalid quantity");
+                    cart.remove(cartItem.getMovieId());
                 }
             } else {
                 if (cartItem.getQuantity() > 0) {
                     cart.put(cartItem.getMovieId(), cartItem);
-                    jsonResponse = CustomerAdapter.convertStatusResponseToJson("success", "Movie added to cart successfully");
                 } else {
                     jsonResponse = CustomerAdapter.convertStatusResponseToJson("error", "Invalid quantity");
+                    super.sendJsonDataResponse(response, jsonResponse);
+                    return;
                 }
             }
 
+            JSONArray jsonArray = new JSONArray();
+
+            for (Map.Entry<String, CartItem> entry : cart.entrySet()) {
+                JSONObject itemJson = new JSONObject();
+                CartItem item = entry.getValue();
+                itemJson = convertShoppingCartToJson(item);
+                jsonArray.put(itemJson);
+            }
+
+            super.sendJsonDataResponse(response, jsonArray);
             session.setAttribute("cart", cart);
-            super.sendJsonDataResponse(response, jsonResponse);
+            logger.info(jsonArray.toString());
 
         } catch (Exception e) {
             super.exceptionHandler.handleException(response, e);

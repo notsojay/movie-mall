@@ -52,7 +52,7 @@ tbody tr:hover {
 }
 
 .cart-custom-button {
-    padding: 6px 8px;
+    padding: 8px 10px;
     background: #41413f;
     border: none;
     border-radius: 6px;
@@ -71,6 +71,39 @@ tbody tr:hover {
     box-shadow: 0 0.5em 0.5em -0.4em #32475b;
     border-color: #32475b;
 }
+
+.quantity-custom-button {
+    padding: 6px 10px;
+    background: #41413f;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+    transition: all 200ms linear;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.quantity-custom-button:hover {
+    background: linear-gradient(50deg, #33485d, #6173a4);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 0.5em 0.5em -0.4em #32475b;
+    border-color: #32475b;
+}
+
+.quantity-custom-button:active {
+    background-color: #e0e0e0;
+}
+
+.quantity-value {
+    width: 30px;
+    text-align: center;
+}
+
 
 @media (max-width: 600px) {
     th, td {

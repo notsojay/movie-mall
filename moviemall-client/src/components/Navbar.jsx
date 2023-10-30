@@ -31,6 +31,12 @@ function Navbar() {
             if (value) query.append(key, value);
         });
         navigate(`${APP_ROUTES.MOVIE_LIST}?requestType=${REQUEST_TYPE.SEARCH_MOVIES}&${query.toString()}`);
+        setSearchParams({
+            title: '',
+            year: '',
+            director: '',
+            starName: ''
+        });
     };
 
     if (isChecking) return null;

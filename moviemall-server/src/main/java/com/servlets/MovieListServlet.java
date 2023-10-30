@@ -143,6 +143,7 @@ public class MovieListServlet extends AbstractServletBase {
                 25
         );
 
+        logger.info(request.getParameter("firstSortKey"));
         requestParams.firstSortKey = getStringFromRequestOrSessionOrDefault(
                 request.getParameter("firstSortKey"),
                 requestParams.firstSortKey,
@@ -171,6 +172,7 @@ public class MovieListServlet extends AbstractServletBase {
             session.setAttribute("userPreferences", requestParams);
         }
 
+        logger.info("\nfirstSortKey" + requestParams.firstSortKey + "\nfirstsortorder: " + requestParams.firstSortOrder + "\nsecondsortkey: " + requestParams.secondSortKey + " \n : " + requestParams.secondSortOrder);
         return requestParams;
     }
 
@@ -234,6 +236,10 @@ public class MovieListServlet extends AbstractServletBase {
 
         addLimitClauseToQuery(finalQuery, queryParams, requestParams.recordsPerPage);
         addOffsetClauseToQuery(finalQuery, queryParams, requestParams.currPage, requestParams.recordsPerPage);
+        logger.info("\n" + finalQuery);
+        for (int i = 0; i < queryParams.size(); ++i) {
+            logger.info("\n" + queryParams.get(i));
+        }
     }
 
     private void buildGenreQuery(HttpServletRequest request, RequestParameters requestParams, StringBuilder finalQuery, List<Object> queryParams) {
@@ -334,6 +340,7 @@ public class MovieListServlet extends AbstractServletBase {
                     + (secondOrder != null ? secondOrder.toUpperCase() : "ASC");
         }
 
+        logger.info('\n' + orderByClause + '\n');
         query.append(orderByClause);
     }
 
@@ -356,3 +363,4 @@ public class MovieListServlet extends AbstractServletBase {
         queryParams.add(offset);
     }
 }
+

@@ -33,14 +33,7 @@ export const FilterOptions = (props) => {
                             value={initialSortValue}
                             onChange={(e) => {
                                 const value = e.target.value;
-                                const valueArray = value.split('-');
-                                updateSetting({
-                                    firstSortKey: valueArray[0], // "title"
-                                    firstSortOrder: valueArray[1], // "asc"
-                                    secondSortKey: valueArray[2], // "rating"
-                                    secondSortOrder: valueArray[3],  // "asc"
-                                    initialSortValue: value
-                                });
+                                updateSetting({initialSortValue: value});
                             }}
                     >
                         <option value="title-asc-rating-asc">Title: A-Z, Rating: Low-High</option>

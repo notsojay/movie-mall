@@ -26,10 +26,20 @@ function MovieList() {
 
     switch (requestType) {
         case REQUEST_TYPE.BROWSE_MOVIES_BY_GENRE:
-            category = searchParams.get('genre')
+            category = searchParams.get('genre');
             break;
         case REQUEST_TYPE.BROWSE_MOVIES_BY_INITIAL:
-            category = searchParams.get('initial')
+            category = searchParams.get('initial');
+            break;
+        case REQUEST_TYPE.SEARCH_MOVIES:
+            let searchQuery = {
+                title: searchParams.get('title') || '',
+                year: searchParams.get('year') || '',
+                director: searchParams.get('director') || '',
+                starName: searchParams.get('starName') || '',
+            };
+            const queryStr = Object.values(searchQuery).filter(Boolean).join('_');
+            category = queryStr ? `search_${queryStr}` : 'search';
             break;
         default:
             break;
@@ -41,10 +51,6 @@ function MovieList() {
         console.log(storedSettings)
         return storedSettings ? JSON.parse(storedSettings) : {
             recordsPerPage: 25,
-            firstSortKey: 'rating',
-            firstSortOrder: 'desc',
-            secondSortKey: 'title',
-            secondSortOrder: 'asc',
             initialSortValue: 'rating-desc-title-asc',
             currentPage: 1
         };
@@ -52,6 +58,7 @@ function MovieList() {
 
     const updateSetting = (newSetting) => {
         const key = `setting_${requestType}_${category}`;
+        console.log(key);
         setSettings(prevSettings => {
             const newSettings = { ...prevSettings, ...newSetting };
             setCookie(key, JSON.stringify(newSettings), 3);
@@ -81,11 +88,17 @@ function MovieList() {
             starName: searchParams.get('starName') || '',
         };
 
+        const valueArray = settings?.initialSortValue?.split('-');
+
         let params = {
             requestType,
             category,
             ...searchQuery,
             ...settings,
+            firstSortKey: valueArray?.[0] ?? "rating", // "title"
+            firstSortOrder: valueArray?.[1] ?? "desc", // "asc"
+            secondSortKey: valueArray?.[2] ?? "title", // "rating"
+            secondSortOrder: valueArray?.[3] ?? "asc"// "asc"
         };
 
         fetchData(API_PATH.MOVIE_LIST, params, true, "Error fetching movies")
@@ -93,11 +106,14 @@ function MovieList() {
                 setMovies(data)
                 const newTotalPages = Math.ceil(data[0]?.total_records / settings.recordsPerPage);
                 setTotalPages(newTotalPages);
+                if (settings.currentPage > totalPages) {
+                    updateSetting({currentPage: 1});
+                }
             })
             .catch(err => setError(err.message))
             .finally(() => setIsLoading(false));
 
-    }, [category, searchParams, settings.recordsPerPage, settings.firstSortKey, settings.firstSortOrder, settings.secondSortKey, settings.secondSortOrder, settings.currentPage]);
+    }, [category, searchParams, settings.recordsPerPage, settings.initialSortValue, settings.currentPage]);
 
     useEffect(() => {
         window.scrollTo(0, 0);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {addToCart, fetchData, postData} from "../utils/apiCaller";
+import {addToCart, fetchData, postData, updateToCart} from "../utils/apiCaller";
 import {API_PATH} from "../config/servletPaths";
 
 import '../assets/styles/page.css';
@@ -15,8 +15,25 @@ function ShoppingCart() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const updateToCart = (movieId, movieTitle, moviePrice, quantity) => {
+        postData(API_PATH.SHOPPING_CART, {
+            movieId: movieId,
+            movieTitle: movieTitle,
+            moviePrice: moviePrice,
+            quantity: quantity
+        }, false, 'Error adding movie to cart')
+            .then(data => {
+                setShoppingCart(data);
+                if (data != null) {
+                    const total = data.reduce((acc, item) => acc + (item.moviePrice * item.quantity), 0);
+                    setTotalAmount(total);
+                }
+            })
+            .catch(err => setError(err.message))
+            .finally(() => setIsLoading(false));
+    };
+
     useEffect(() => {
-        // 假设 fetchData 是你用来获取购物车数据的函数
         fetchData(API_PATH.SHOPPING_CART, null, true, "Error fetching cart total")
             .then(data => {
                 setShoppingCart(data);
@@ -49,6 +66,7 @@ function ShoppingCart() {
                     <tr>
                         <th>Title</th>
                         <th>Quantity</th>
+                        <th>Delete All</th>
                         <th>Price</th>
                         <th>Total Amount</th>
                     </tr>
@@ -57,16 +75,33 @@ function ShoppingCart() {
                     {shoppingCart.map((item) => (
                         <tr key={item.movieId}>
                             <td>{item.movieTitle}</td>
-                            <td>{item.quantity}</td>
-                            <td>{`$${item.moviePrice}`}</td>
-                            <td>{`$${item.moviePrice * item.quantity}`}</td>
+                            <td>
+                                <button className="quantity-custom-button"
+                                    onClick={() => updateToCart(item.movieId, item.movieTitle, item.moviePrice, -1)}>
+                                    --
+                                </button>
+                                {item.quantity}
+                                <button className="quantity-custom-button"
+                                    onClick={() => updateToCart(item.movieId, item.movieTitle, item.moviePrice, 1)}>
+                                    +
+                                </button>
+                            </td>
+                            <td>
+                                <button className="cart-custom-button"
+                                        onClick={() => updateToCart(item.movieId, item.movieTitle, item.moviePrice, item.quantity*(-1))}>
+                                    delete
+                                </button>
+                            </td>
+                            <td>{`$${item.moviePrice.toFixed(2)}`}</td>
+                            <td>{`$${(item.moviePrice * item.quantity).toFixed(2)}`}</td>
                         </tr>
                     ))}
                         <tr>
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td className="total-amount">{`$${totalAmount}`}</td>
+                            <td></td>
+                            <td className="total-amount">{`$${totalAmount.toFixed(2)}`}</td>
                         </tr>
                     </tbody>
                 </table>
