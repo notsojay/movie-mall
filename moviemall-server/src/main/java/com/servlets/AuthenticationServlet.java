@@ -20,8 +20,8 @@ import static com.adapter.CustomerAdapter.*;
 import static com.utils.DatabaseManager.getJNDIDatabaseConnection;
 import static com.utils.DatabaseManager.queryFrom_moviedb;
 
-@WebServlet("/CustomerAuthenticationServlet")
-public class CustomerAuthenticationServlet extends AbstractServletBase {
+@WebServlet("/AuthenticationServlet")
+public class AuthenticationServlet extends AbstractServletBase {
     private static final String SQL_QUERY = """
             SELECT password
             FROM customers
