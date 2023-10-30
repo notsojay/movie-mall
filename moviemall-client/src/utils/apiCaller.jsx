@@ -39,7 +39,7 @@ export const addToCart = async (movieId, movieTitle, moviePrice) => {
             quantity: 1
         }, false, 'Error adding movie to cart');
 
-        if (response && response.status === 'success') {
+        if (response && response.status !== 'error') {
             console.log('Movie updated to cart successfully');
         } else {
             console.error('Failed to add movie to cart');

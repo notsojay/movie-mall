@@ -72,7 +72,7 @@ function ShoppingCart() {
                     </tr>
                     </thead>
                     <tbody>
-                    {shoppingCart.map((item) => (
+                    {shoppingCart && Array.isArray(shoppingCart) && shoppingCart?.map((item) => (
                         <tr key={item.movieId}>
                             <td>{item.movieTitle}</td>
                             <td>

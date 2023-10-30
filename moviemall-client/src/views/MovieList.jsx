@@ -17,7 +17,7 @@ import {getCookie, setCookie} from "../utils/cookie";
 
 function MovieList() {
     const [movies, setMovies] = useState([]);
-    const [totalPages, setTotalPages] = useState(1)
+    const [totalPages, setTotalPages] = useState(null)
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchParams] = useSearchParams();
@@ -48,7 +48,7 @@ function MovieList() {
     const [settings, setSettings] = useState(() => {
         const key = `setting_${requestType}_${category}`;
         const storedSettings = getCookie(key);
-        console.log(storedSettings)
+        console.log("store = " + storedSettings)
         return storedSettings ? JSON.parse(storedSettings) : {
             recordsPerPage: 25,
             initialSortValue: 'rating-desc-title-asc',
@@ -58,7 +58,7 @@ function MovieList() {
 
     const updateSetting = (newSetting) => {
         const key = `setting_${requestType}_${category}`;
-        console.log(key);
+        // console.log(key);
         setSettings(prevSettings => {
             const newSettings = { ...prevSettings, ...newSetting };
             setCookie(key, JSON.stringify(newSettings), 3);
@@ -106,7 +106,8 @@ function MovieList() {
                 setMovies(data)
                 const newTotalPages = Math.ceil(data[0]?.total_records / settings.recordsPerPage);
                 setTotalPages(newTotalPages);
-                if (settings.currentPage > totalPages) {
+                console.log("total: " + newTotalPages);
+                if (settings?.currentPage > newTotalPages) {
                     updateSetting({currentPage: 1});
                 }
             })
@@ -114,6 +115,7 @@ function MovieList() {
             .finally(() => setIsLoading(false));
 
     }, [category, searchParams, settings.recordsPerPage, settings.initialSortValue, settings.currentPage]);
+
 
     useEffect(() => {
         window.scrollTo(0, 0);

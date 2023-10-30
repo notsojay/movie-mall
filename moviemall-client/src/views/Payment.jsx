@@ -19,17 +19,16 @@ function Payment() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const data = await postData(API_PATH.ORDER, {
+            const response = await postData(API_PATH.ORDER, {
                 firstName: creditCardInfo.firstName,
                 lastName: creditCardInfo.lastName,
                 cardNumber: creditCardInfo.cardNumber,
                 expiryDate: creditCardInfo.expiryDate
             }, true, 'Error creating order');
 
-            if (data.status === "success" && data.message === "Order has been placed") {
+            if (response && response.status === "success") {
                 setMessage({ type: 'success', text: 'Order has been placed successfully!' });
-            } else {
-                console.error('Error creating order:', data);
+            } else if (response && response.status === "error") {
                 setMessage({ type: 'error', text: 'Error creating order. Please try again.' });
             }
         } catch (error) {

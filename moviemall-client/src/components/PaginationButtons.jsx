@@ -67,24 +67,22 @@ export const PaginationButtons = (props) => {
                     </div>
                 </div>
                 <div className="buttons">
-
-                        <>
-                            <button
-                                className="page-custom-button"
-                                onClick={() => changePage(currentPage - 1)}
-                                disabled={currentPage === 1}
-                            >
-                                Prev
-                            </button>
-                            <button
-                                className="page-custom-button"
-                                onClick={() => changePage(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                            >
-                                Next
-                            </button>
-                        </>
-
+                    <>
+                        <button
+                            className="page-custom-button"
+                            onClick={() => changePage(currentPage - 1)}
+                            disabled={currentPage === 1}
+                        >
+                            Prev
+                        </button>
+                        <button
+                            className="page-custom-button"
+                            onClick={() => changePage(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                        >
+                            Next
+                        </button>
+                    </>
                 </div>
             </div>
         </div>
