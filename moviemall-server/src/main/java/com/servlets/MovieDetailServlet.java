@@ -23,6 +23,7 @@ public class MovieDetailServlet extends AbstractServletBase {
                    m.title,
                    m.year,
                    m.director,
+                   m.price,
                    (
                        SELECT GROUP_CONCAT(DISTINCT g.name ORDER BY g.name ASC)
                        FROM genres_in_movies gm

@@ -13,6 +13,8 @@ public class MovieEntity {
 
     private Integer year = null;
 
+    private Float price = null;
+
     private String director = null;
 
     private List<String> genres = null;
@@ -102,5 +104,13 @@ public class MovieEntity {
 
     public void setTotalRecords(Integer totalRecords) {
         this.totalRecords = totalRecords;
+    }
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
     }
 }

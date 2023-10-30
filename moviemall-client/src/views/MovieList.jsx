@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useSearchParams} from 'react-router-dom';
 import {renderBasicProperty, renderH1, renderMovieGenresAsLink, renderMovieTitleAsLink} from '../utils/movieRenderers';
 import {renderStarsAsLink} from '../utils/starRenderers';
-import {fetchData} from "../utils/apiCaller";
+import {fetchData, addToCart} from "../utils/apiCaller";
 import {API_PATH} from "../config/servletPaths";
 import {APP_ROUTES} from "../config/appRoutes";
 import {REQUEST_TYPE} from "../config/movieRequestTypes";
@@ -12,129 +12,96 @@ import {PaginationButtons} from "../components/PaginationButtons";
 import '../assets/styles/table.css';
 import '../assets/styles/header.css';
 import '../assets/styles/link.css';
+import '../assets/styles/page.css';
+import {getCookie, setCookie} from "../utils/cookie";
 
 function MovieList() {
     const [movies, setMovies] = useState([]);
+    const [totalPages, setTotalPages] = useState(1)
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchParams] = useSearchParams();
     const requestType = searchParams.get('requestType');
-    const genre = searchParams.get('genre');
-    const initial = searchParams.get('initial');
+    let category = null;
 
-    const [recordsPerPage, setRecordsPerPage] = useState(() => {
-        const storedRecordsPerPage = localStorage.getItem('recordsPerPage');
-        return storedRecordsPerPage ? JSON.parse(storedRecordsPerPage) : 25;
-    });
-    const [totalPages, setTotalPages] = useState(() => {
-        const storedTotalPage = localStorage.getItem('totalPage');
-        return storedTotalPage ? JSON.parse(storedTotalPage) : 1;
-    });
-    const [currentFirstSortKey, setCurrentFirstSortKey] = useState(() => {
-        const storedCurrentFirstSortKey = localStorage.getItem('currentFirstSortKey');
-        return storedCurrentFirstSortKey || 'rating';
-    });
-    const [currentFirstSortOrder, setCurrentFirstSortOrder] = useState(() => {
-        const storedCurrentFirstSortOrder = localStorage.getItem('currentFirstSortOrder');
-        return storedCurrentFirstSortOrder || 'desc';
-    });
-    const [currentSecondSortKey, setCurrentSecondSortKey] = useState(() => {
-        const storedCurrentSecondSortKey = localStorage.getItem('currentSecondSortKey');
-        return storedCurrentSecondSortKey || 'title';
-    });
-    const [currentSecondSortOrder, setCurrentSecondSortOrder] = useState(() => {
-        const storedCurrentSecondSortOrder = localStorage.getItem('currentSecondSortOrder');
-        return storedCurrentSecondSortOrder || 'asc';
-    });
+    switch (requestType) {
+        case REQUEST_TYPE.BROWSE_MOVIES_BY_GENRE:
+            category = searchParams.get('genre')
+            break;
+        case REQUEST_TYPE.BROWSE_MOVIES_BY_INITIAL:
+            category = searchParams.get('initial')
+            break;
+        default:
+            break;
+    }
 
-    const getCurrentUrlType = () => {
-        const path = window.location.pathname;
-        const routes = [
-            APP_ROUTES.MOVIE_LIST_BY_GENRE,
-            APP_ROUTES.MOVIE_LIST_BY_INITIAL,
-        ];
-        return routes.find(route => path.includes(route)) || null;
-    };
-
-    const currentUrlType = getCurrentUrlType();
-    const storageKey = `${currentUrlType}_currPage`;
-    const [currentPage, setCurrentPage] = useState(() => {
-        const storedPage = localStorage.getItem(storageKey);
-        return storedPage ? JSON.parse(storedPage) : 1;
+    const [settings, setSettings] = useState(() => {
+        const key = `setting_${requestType}_${category}`;
+        const storedSettings = getCookie(key);
+        console.log(storedSettings)
+        return storedSettings ? JSON.parse(storedSettings) : {
+            recordsPerPage: 25,
+            firstSortKey: 'rating',
+            firstSortOrder: 'desc',
+            secondSortKey: 'title',
+            secondSortOrder: 'asc',
+            initialSortValue: 'rating-desc-title-asc',
+            currentPage: 1
+        };
     });
 
-    const nextPage = () => {
-        setCurrentPage(prev => prev + 1);
-    };
-
-    const prevPage = () => {
-        if (currentPage > 1) setCurrentPage(prev => prev - 1);
-    };
+    const updateSetting = (newSetting) => {
+        const key = `setting_${requestType}_${category}`;
+        setSettings(prevSettings => {
+            const newSettings = { ...prevSettings, ...newSetting };
+            setCookie(key, JSON.stringify(newSettings), 3);
+            return newSettings;
+        });
+    }
 
     const filterOptionsProps = {
         requestType,
-        recordsPerPage,
-        setRecordsPerPage,
-        setCurrentFirstSortKey,
-        setCurrentFirstSortOrder,
-        setCurrentSecondSortKey,
-        setCurrentSecondSortOrder
+        recordsPerPage: settings?.recordsPerPage ?? 25,
+        initialSortValue: settings?.initialSortValue ?? 'rating-desc-title-asc',
+        updateSetting
     };
 
     const paginationProps = {
         requestType,
-        prevPage,
-        nextPage,
-        currentPage,
-        totalPages
+        currentPage: settings?.currentPage ?? 1,
+        totalPages,
+        updateSetting
     };
 
     useEffect(() => {
-        let params = {
-            recordsPerPage: recordsPerPage,
-            firstSortKey: currentFirstSortKey,
-            firstSortOrder: currentFirstSortOrder,
-            secondSortKey: currentSecondSortKey,
-            secondSortOrder: currentSecondSortOrder
+        const searchQuery = {
+            title: searchParams.get('title') || '',
+            year: searchParams.get('year') || '',
+            director: searchParams.get('director') || '',
+            starName: searchParams.get('starName') || '',
         };
 
-        switch (requestType) {
-            case REQUEST_TYPE.GET_TOP20_MOVIES:
-                params.requestType = REQUEST_TYPE.GET_TOP20_MOVIES;
-                break;
-            case REQUEST_TYPE.BROWSE_MOVIES_BY_GENRE:
-                params.requestType = REQUEST_TYPE.BROWSE_MOVIES_BY_GENRE;
-                params.genre = genre;
-                params.page = currentPage
-                break;
-            case REQUEST_TYPE.BROWSE_MOVIES_BY_INITIAL:
-                params.requestType = REQUEST_TYPE.BROWSE_MOVIES_BY_INITIAL;
-                params.initial = initial;
-                params.page = currentPage
-                break;
-            default:
-                console.error("Unknown requestType:", requestType);
-                return;
-        }
+        let params = {
+            requestType,
+            category,
+            ...searchQuery,
+            ...settings,
+        };
 
-        fetchData(API_PATH.MOVIE_LIST, params, "Error fetching movies")
-            .then(data => setMovies(data))
+        fetchData(API_PATH.MOVIE_LIST, params, true, "Error fetching movies")
+            .then(data => {
+                setMovies(data)
+                const newTotalPages = Math.ceil(data[0]?.total_records / settings.recordsPerPage);
+                setTotalPages(newTotalPages);
+            })
             .catch(err => setError(err.message))
             .finally(() => setIsLoading(false));
 
-        setTotalPages(Math.ceil(movies?.[0]?.total_records / recordsPerPage));
-
-    }, [currentFirstSortOrder, currentFirstSortKey, currentSecondSortOrder, currentSecondSortKey, genre, initial, currentPage, recordsPerPage, requestType, movies]);
+    }, [category, searchParams, settings.recordsPerPage, settings.firstSortKey, settings.firstSortOrder, settings.secondSortKey, settings.secondSortOrder, settings.currentPage]);
 
     useEffect(() => {
-        localStorage.setItem(storageKey, currentPage);
-        localStorage.setItem('recordsPerPage', recordsPerPage);
-        localStorage.setItem('totalPages', totalPages);
-        localStorage.setItem('currentFirstSortKey', `${currentFirstSortKey}`);
-        localStorage.setItem('currentFirstSortOrder', `${currentFirstSortOrder}`);
-        localStorage.setItem('currentSecondSortKey', `${currentSecondSortKey}`);
-        localStorage.setItem('currentSecondSortOrder', `${currentSecondSortOrder}`);
-    }, [currentPage, recordsPerPage, currentFirstSortKey, currentFirstSortOrder, currentSecondSortKey, currentSecondSortOrder, totalPages, storageKey]);
+        window.scrollTo(0, 0);
+    }, [settings.currentPage]);
 
     if (isLoading) {
         return null;
@@ -146,7 +113,7 @@ function MovieList() {
 
     return (
         <div>
-            <h1>{renderH1(requestType, genre, initial)}</h1>
+            <h1>{renderH1(requestType, category)}</h1>
             <FilterOptions {...filterOptionsProps} />
             {movies.length > 0 ? (
                 <table>
@@ -158,6 +125,7 @@ function MovieList() {
                             <th>Genres</th>
                             <th>Stars</th>
                             <th>Rating</th>
+                            <th>Cart</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -169,6 +137,11 @@ function MovieList() {
                                 <td>{renderMovieGenresAsLink(movie.genres, APP_ROUTES.MOVIE_LIST, true, 3)}</td>
                                 <td>{renderStarsAsLink(movie.star_names, movie.star_ids, APP_ROUTES.STAR_DETAIL, true, 3)}</td>
                                 <td>{renderBasicProperty(movie.rating)}</td>
+                                <td>
+                                    <button className="cart-custom-button" onClick={() => addToCart(movie.movie_id, movie.title, movie.price)}>
+                                        Add to cart
+                                    </button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>

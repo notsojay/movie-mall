@@ -7,8 +7,10 @@ import {renderBasicProperty, renderMovieTitleAsLink} from '../utils/movieRendere
 import '../assets/styles/table.css';
 import '../assets/styles/header.css';
 import '../assets/styles/link.css';
+import '../assets/styles/page.css';
 import {APP_ROUTES} from "../config/appRoutes";
 import {fetchData} from "../utils/apiCaller";
+
 function StarDetail() {
     const [starDetail, setStarDetail] = useState({
         star_name: '',
@@ -24,7 +26,7 @@ function StarDetail() {
     const star_id = searchParams.get('query');
 
     useEffect(() => {
-        fetchData(API_PATH.STAR_DETAIL, { query: star_id }, "Error fetching star details")
+        fetchData(API_PATH.STAR_DETAIL, { query: star_id }, false, "Error fetching star details")
             .then(data => setStarDetail(data))
             .catch(err => setError(err.message))
             .finally(() => setIsLoading(false));
@@ -39,7 +41,7 @@ function StarDetail() {
     }
 
     return (
-        <div>
+        <div className="page">
             {starDetail?.star_name ? (
                 <React.Fragment>
                     <h1>

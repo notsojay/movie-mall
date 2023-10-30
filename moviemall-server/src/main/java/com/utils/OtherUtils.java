@@ -9,7 +9,6 @@ public class OtherUtils {
 
     public static <T> List<T> castObjToList(Object obj, Class<T> clazz) {
         List<T> result = new ArrayList<>();
-
         if (obj instanceof List<?>) {
             for (Object item : (List<?>) obj) {
                 if (clazz.isInstance(item)) {
@@ -19,7 +18,6 @@ public class OtherUtils {
                 }
             }
         }
-
         return result;
     }
 
@@ -42,7 +40,7 @@ public class OtherUtils {
         if (requestValue != null && !requestValue.isEmpty()) {
             try {
                 MovieRequestType requestType = MovieRequestType.fromString(requestValue);
-                if (requestType != sessionValue) {
+                if (sessionValue == null || requestType != sessionValue) {
                     return requestType;
                 }
             } catch (IllegalArgumentException e) {
@@ -56,7 +54,7 @@ public class OtherUtils {
         if (requestValue != null && !requestValue.isEmpty()) {
             try {
                 int intValue = Integer.parseInt(requestValue);
-                if (intValue != sessionValue) {
+                if (sessionValue == null || intValue != sessionValue) {
                     return intValue;
                 }
             } catch (NumberFormatException e) {

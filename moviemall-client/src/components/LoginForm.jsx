@@ -3,7 +3,6 @@ import useLogin from '../hooks/useLogin';
 import useInputAnimation from '../hooks/useInputAnimation';
 
 import '../assets/styles/login-form.css'
-import '../assets/styles/custom-button.css'
 
 function LoginForm({ onClose }) {
     const [email, setEmail] = useState('');
@@ -36,7 +35,6 @@ function LoginForm({ onClose }) {
         <div className="modalBackground">
             <div className="center">
                 <form onSubmit={handleSubmit}>
-
                     <button className="closeModalX" onClick={onClose}>X</button>
                     <div className="title">Login</div>
                     {error && <div className="error-message">{error}</div>}
@@ -65,7 +63,7 @@ function LoginForm({ onClose }) {
                             </span>
                         </span>
                     <div className="links">
-                        <a className="custom-button" href="#">Forgot Password</a>
+                        <a className="transparent-custom-button" href="#">Forgot Password</a>
                         <label htmlFor="remember">
                             <input type="checkbox" id="remember" />
                             Remember Me
@@ -73,7 +71,7 @@ function LoginForm({ onClose }) {
                     </div>
                     <button
                         type="submit"
-                        className={`btn custom-button ${isActive ? "active" : ""}`}
+                        className={`btn transparent-custom-button ${isActive ? "active" : ""}`}
                         onClick={animateInput}
                     >
                         <span>Login</span>

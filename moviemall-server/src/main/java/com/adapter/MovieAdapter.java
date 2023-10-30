@@ -65,6 +65,11 @@ public class MovieAdapter {
             movie.setRating(rating);
         }
 
+        Float price = getSafeColumnValue(rs, "price", ResultSet::getFloat);
+        if (price != null) {
+            movie.setPrice(price);
+        }
+
         return movie;
     }
 

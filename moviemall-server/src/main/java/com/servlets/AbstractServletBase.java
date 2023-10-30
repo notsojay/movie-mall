@@ -18,6 +18,7 @@ public abstract class AbstractServletBase extends HttpServlet {
             throw new IllegalArgumentException("ERROR: Provided object is neither a JSONObject nor a JSONArray");
         }
 
+        response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
@@ -25,5 +26,17 @@ public abstract class AbstractServletBase extends HttpServlet {
             out.print(json);
             out.flush();
         }
+    }
+
+    protected void sendStatusResponse(HttpServletResponse response, int status, String message) throws IOException {
+        if (message == null || message.isEmpty()) {
+            throw new IllegalArgumentException("ERROR: Invalid String");
+        }
+        if (status == response.SC_OK) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+        response.getWriter().write(message);
     }
 }

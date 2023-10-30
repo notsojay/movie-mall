@@ -75,14 +75,16 @@ export function renderMovieInitialsAsLink(initials, baseLink) {
     });
 }
 
-export function renderH1(requestType, genre, initial) {
+export function renderH1(requestType, category) {
     switch (requestType) {
         case REQUEST_TYPE.GET_TOP20_MOVIES:
             return "Top 20 rated movies";
+        case REQUEST_TYPE.SEARCH_MOVIES:
+            return "Search result"
         case REQUEST_TYPE.BROWSE_MOVIES_BY_GENRE:
-            return `Movies in ${genre} Genre`;
+            return `Movies in ${category} Genre`;
         case REQUEST_TYPE.BROWSE_MOVIES_BY_INITIAL:
-            return `Movies starting with letter '${initial}'`;
+            return `Movies starting with letter '${category}'`;
         default:
             return "Movies";
     }

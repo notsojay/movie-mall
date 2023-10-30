@@ -30,6 +30,7 @@ public class ExceptionHandler {
         EXCEPTION_MAPPINGS.put(IOException.class, new ErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server communication error"));
         EXCEPTION_MAPPINGS.put(ServletException.class, new ErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Servlet error"));
         EXCEPTION_MAPPINGS.put(SQLSyntaxErrorException.class, new ErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "SQL syntax error"));
+        EXCEPTION_MAPPINGS.put(java.lang.NullPointerException.class, new ErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "NULL pointer error"));
     }
 
 //    public void handleException(HttpServletResponse response, Exception e) {

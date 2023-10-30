@@ -42,6 +42,7 @@ public class MovieListServlet extends AbstractServletBase {
                 m.year,
                 m.director,
                 subquery.rating,
+                m.price,
                 (
                     SELECT GROUP_CONCAT(DISTINCT limited_genres.name ORDER BY limited_genres.name ASC)
                     FROM (
@@ -114,7 +115,11 @@ public class MovieListServlet extends AbstractServletBase {
 
     private RequestParameters getRequestParameters(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        RequestParameters requestParams = (RequestParameters) session.getAttribute("userPreferences");
+        RequestParameters requestParams = null;
+
+        if (session != null) {
+            requestParams = (RequestParameters) session.getAttribute("userPreferences");
+        }
 
         if (requestParams == null) {
             requestParams = new RequestParameters();
@@ -127,7 +132,7 @@ public class MovieListServlet extends AbstractServletBase {
         );
 
         requestParams.currPage = getIntFromRequestOrSessionOrDefault(
-                request.getParameter("page"),
+                request.getParameter("currentPage"),
                 requestParams.currPage,
                 1
         );
@@ -143,6 +148,7 @@ public class MovieListServlet extends AbstractServletBase {
                 requestParams.firstSortKey,
                 "rating"
         );
+
         requestParams.firstSortOrder = getStringFromRequestOrSessionOrDefault(
                 request.getParameter("firstSortOrder"),
                 requestParams.firstSortOrder,
@@ -161,7 +167,10 @@ public class MovieListServlet extends AbstractServletBase {
                 "asc"
         );
 
-        session.setAttribute("userPreferences", requestParams);
+        if (session != null) {
+            session.setAttribute("userPreferences", requestParams);
+        }
+
         return requestParams;
     }
 
@@ -228,7 +237,7 @@ public class MovieListServlet extends AbstractServletBase {
     }
 
     private void buildGenreQuery(HttpServletRequest request, RequestParameters requestParams, StringBuilder finalQuery, List<Object> queryParams) {
-        String genre = request.getParameter("genre");
+        String genre = request.getParameter("category");
 
         finalQuery.append(SQL_QUERY_PREFIX);
         finalQuery.append(SQL_QUERY_SUFFIX);
@@ -260,7 +269,7 @@ public class MovieListServlet extends AbstractServletBase {
     }
 
     private void buildInitialQuery(HttpServletRequest request, RequestParameters requestParams, StringBuilder finalQuery, List<Object> queryParams) {
-        String initial = request.getParameter("initial");
+        String initial = request.getParameter("category");
 
         finalQuery.append(SQL_QUERY_PREFIX);
         finalQuery.append(SQL_QUERY_SUFFIX);

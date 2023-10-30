@@ -1,5 +1,6 @@
 package com.servlets;
 
+import com.adapter.CustomerAdapter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.models.CustomerEntity;
@@ -64,9 +65,9 @@ public class CustomerAuthenticationServlet extends AbstractServletBase {
             AuthResult authResult = authenticate(email, password, request);
 
             JSONObject jsonResponse = switch (authResult) {
-                case SUCCESS -> convertLoginResponseToJson("success", "Logged in successfully");
-                case PASSWORD_INCORRECT -> convertLoginResponseToJson("error", "Incorrect password");
-                case EMAIL_NOT_FOUND -> convertLoginResponseToJson("error", "Username not found");
+                case SUCCESS -> convertStatusResponseToJson("success", "Logged in successfully");
+                case PASSWORD_INCORRECT -> convertStatusResponseToJson("error", "Incorrect password");
+                case EMAIL_NOT_FOUND -> convertStatusResponseToJson("error", "Username not found");
             };
 
             super.sendJsonDataResponse(response, jsonResponse);
@@ -84,7 +85,7 @@ public class CustomerAuthenticationServlet extends AbstractServletBase {
                 session.invalidate();
             }
 
-            JSONObject jsonResponse = convertLogoutResponseToJson("success", "Logged out successfully");
+            JSONObject jsonResponse = CustomerAdapter.convertStatusResponseToJson("success", "Logged out successfully");
             super.sendJsonDataResponse(response, jsonResponse);
 
         } catch (Exception e) {

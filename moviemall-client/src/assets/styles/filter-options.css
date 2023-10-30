@@ -1,0 +1,42 @@
+.filter-options-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 15px;
+    background-color: #222223;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    margin-right: 1.5em;
+}
+
+.filter-label {
+    font-size: 15px;
+    font-weight: bold;
+    margin-right: -5px;
+    color: white;
+}
+
+select {
+    font-size: 14px;
+    padding: 5px 5px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+select:hover,
+select:focus {
+    border-color: #888;
+}
+
+@media (max-width: 600px) {
+    .filter-options-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+}

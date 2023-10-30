@@ -3,6 +3,7 @@ package com.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.functional.QueryResultProcessor;
 import com.functional.ResultSetGetter;
+import com.functional.UpdateResultProcessor;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -43,6 +44,23 @@ public class DatabaseManager {
             try (ResultSet rs = statement.executeQuery()) {
                 return processor.process(rs);
             }
+        }
+    }
+
+    public static void updateIn_moviedb(Connection conn, String sql, UpdateResultProcessor processor, Object... params) throws SQLException {
+        if (conn == null) {
+            throw new IllegalArgumentException("Error: Connection is null");
+        }
+        if (sql == null || sql.trim().isEmpty()) {
+            throw new IllegalArgumentException("Error: SQL query is null or empty");
+        }
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            for (int i = 0; i < params.length; ++i) {
+                statement.setObject(i+1, params[i]);
+            }
+            int updateCount = statement.executeUpdate();
+            processor.process(updateCount);
         }
     }
 

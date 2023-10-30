@@ -2,11 +2,13 @@ table {
     width: 100%;
     overflow-y: auto;
     border-collapse: collapse;
-    margin: 2em auto;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    margin: 3em auto 3em;
     border: none;
     border-radius: 12px;
     transition: all 0.3s ease-in-out;
+    -webkit-box-shadow:0px 0px 151px 0px rgba(46,171,255,0.29);
+    -moz-box-shadow: 0px 0px 151px 0px rgba(46,171,255,0.29);
+    box-shadow: 0px 0px 151px 0px rgba(46,171,255,0.29);
 }
 
 table:hover {
@@ -16,7 +18,7 @@ table:hover {
 th, td {
     padding: 0.9rem 0.6rem;
     text-align: center;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1.5px solid #41413f;
 }
 
 thead {
@@ -36,16 +38,38 @@ td {
 
 tbody tr {
     transition: all 0.3s ease-in-out;
+    color: white;
 }
 
 tbody tr:nth-child(odd) {
-    background-color: #ecf0f1;
+    background-color: #222223;
 }
 
 tbody tr:hover {
-    background-color: #bdc3c7;
+    background-color: #222223;
     transform: translateY(-3px);
     filter: contrast(1.5);
+}
+
+.cart-custom-button {
+    padding: 6px 8px;
+    background: #41413f;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+    transition: all 200ms linear;
+}
+
+.cart-custom-button:hover {
+    background: linear-gradient(50deg, #33485d, #6173a4);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 0.5em 0.5em -0.4em #32475b;
+    border-color: #32475b;
 }
 
 @media (max-width: 600px) {

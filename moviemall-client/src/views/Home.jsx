@@ -5,6 +5,7 @@ import {API_PATH} from "../config/servletPaths";
 
 import '../assets/styles/link.css';
 import '../assets/styles/header.css';
+import '../assets/styles/page.css';
 import {fetchData} from "../utils/apiCaller";
 
 export default function Home() {
@@ -14,7 +15,7 @@ export default function Home() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetchData(API_PATH.MOVIE_LIST, {requestType: REQUEST_TYPE.GET_ALL_GENRES}, "Error fetching genres")
+        fetchData(API_PATH.MOVIE_LIST, {requestType: REQUEST_TYPE.GET_ALL_GENRES}, false, "Error fetching genres")
             .then(data => data.map(item => item.genres))
             .then(data => data.flat())
             .then(data => setGenres(data))
