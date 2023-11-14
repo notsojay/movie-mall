@@ -2,10 +2,9 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    padding: 15px;
-    background-color: #222223;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    position: relative; /* Needed for z-index to work */
+    z-index: 10;
 }
 
 .filter-option {
@@ -19,15 +18,21 @@
     font-weight: bold;
     margin-right: -5px;
     color: white;
+    font-family: 'Helvetica';
 }
 
 select {
     font-size: 14px;
+    color: rgba(255, 255, 255, 0.99);
+    font-weight: bold;
     padding: 5px 5px;
-    border: 2px solid #ccc;
+    border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 5px;
+    background-color: rgba(245, 245, 245, 0.2);
     outline: none;
+    transition: all 200ms linear;
 }
+
 
 select:hover,
 select:focus {

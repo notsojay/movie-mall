@@ -1,15 +1,45 @@
 import React, {useEffect, useState} from 'react';
 import useLogin from '../hooks/useLogin';
 import useInputAnimation from '../hooks/useInputAnimation';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 import '../assets/styles/login-form.css'
+import {useAuth} from "../hooks/useAuth";
 
-function LoginForm({ onClose }) {
+function LoginForm({ onClose, userType }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [login, loginResponse] = useLogin();
-    const [animateInput, setIsActive, isActive] = useInputAnimation();
+    const [captchaValue, setCaptchaValue] = useState(null);
+    const [animateInput, isAnimationActive, setIsAnimationActive] = useInputAnimation();
     const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+
+        if (!email.trim() || !password.trim()) {
+            setError('Please enter an Email and Password.');
+            setIsAnimationActive(false);
+            return;
+        }
+        if (!captchaValue) {
+            setError('Please verify that you are not a robot.');
+            setIsAnimationActive(false);
+            return;
+        }
+
+        const isErrorMessage = await login(email, password, captchaValue, userType);
+        console.log(isErrorMessage);
+        if (isErrorMessage) {
+            setError(isErrorMessage);
+            setIsAnimationActive(false);
+        }
+    };
+    const handleCaptchaChange = (value) => {
+        setCaptchaValue(value);
+    };
 
     useEffect(() => {
         if (loginResponse && loginResponse === "success") {
@@ -17,26 +47,12 @@ function LoginForm({ onClose }) {
         }
     }, [loginResponse, onClose]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!email.trim() || !password.trim()) {
-            setError('Please enter an Email and Password');
-            setIsActive(false);
-            return;
-        }
-        const errorMessage = await login(email, password);
-        if (errorMessage) {
-            setError(errorMessage);
-            setIsActive(false);
-        }
-    };
-
     return (
         <div className="modalBackground">
             <div className="center">
-                <form onSubmit={handleSubmit}>
-                    <button className="closeModalX" onClick={onClose}>X</button>
-                    <div className="title">Login</div>
+                <form className={"login-form"} onSubmit={handleSubmit}>
+                    {userType === "customer" && <button className="closeModalX" onClick={onClose}>X</button>}
+                    <div className="title">{userType === 'customer' ? "Login" : "Employee Login"}</div>
                     {error && <div className="error-message">{error}</div>}
                     <span className="inputs">
                             <span className="inputf">
@@ -69,9 +85,15 @@ function LoginForm({ onClose }) {
                             Remember Me
                         </label>
                     </div>
+                    <ReCAPTCHA
+                        sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
+                        onChange={handleCaptchaChange}
+                        className="login-recaptcha"
+                        theme="dark"
+                    />
                     <button
                         type="submit"
-                        className={`btn transparent-custom-button ${isActive ? "active" : ""}`}
+                        className={`btn ${isAnimationActive ? "active" : ""}`}
                         onClick={animateInput}
                     >
                         <span>Login</span>

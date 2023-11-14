@@ -1,3 +1,5 @@
+iframe#webpack-dev-server-client-overlay{ display:none!important }
+
 .App {
   text-align: center;
 }
@@ -34,6 +36,38 @@ body {
   color: #333;
   margin: 0;
   padding: 0;
+}
+
+.video-background {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.video-background video {
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.body-container {
+  /*position: relative;*/
+  /*width: 100%;*/
+  /*min-height: 100%;*/
+  /*padding-bottom: 100px;*/
+  /*box-sizing: border-box;*/
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes App-logo-spin {

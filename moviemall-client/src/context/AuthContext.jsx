@@ -1,5 +1,5 @@
 import React, {createContext, useState, useEffect} from 'react';
-import {API_PATH} from "../config/servletPaths";
+import {SERVLET_ROUTE} from "../config/servletRoutes";
 import axios from "axios";
 
 import '../assets/styles/loading.css';
@@ -17,12 +17,12 @@ export const AuthProvider = ({ children }) => {
         const fetchSessionStatus = async () => {
             try {
                 setIsChecking(true);
-                const response = await axios.get(API_PATH.AUTHENTICATION, {
+                const response = await axios.get(SERVLET_ROUTE.AUTHENTICATION, {
                     headers: {
                         'Accept': 'application/json'
                     }
                 });
-                if (response.data.status === "logged-in") {
+                if (response.status === 200 && response.data.status === "logged-in") {
                     setIsLoggedIn(true);
                     setShowLoginModal(false);
                 }
@@ -36,26 +36,6 @@ export const AuthProvider = ({ children }) => {
         };
         fetchSessionStatus().catch(console.error);
     }, []);
-
-    // useEffect(() => {
-    //     setIsChecking(true);
-    //
-    //     fetchData(API_PATH.AUTHENTICATION, null, "Error fetching session status")
-    //         .then(data => {
-    //             if (data.status === "logged-in") {
-    //                 setIsLoggedIn(true);
-    //                 setShowLoginModal(false);
-    //             }
-    //         })
-    //         .catch(err => {
-    //             setError(err.message || 'An error occurred while checking session status.');
-    //         })
-    //         .finally(() => {
-    //             setIsLoading(false);
-    //             setIsChecking(false);
-    //         });
-    // }, []);
-
 
     if (error) {
         return <p>Error: {error}</p>;

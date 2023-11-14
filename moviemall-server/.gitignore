@@ -40,3 +40,4 @@ build/
 node_modules/
 /src/main/resources/db/
 /scripts/
+.env

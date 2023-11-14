@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useSearchParams} from 'react-router-dom';
-import {API_PATH} from "../config/servletPaths";
+import {SERVLET_ROUTE} from "../config/servletRoutes";
 import axios from "axios";
 import {renderStarAsHeader} from '../utils/starRenderers';
 import {renderBasicProperty, renderMovieTitleAsLink} from '../utils/movieRenderers';
@@ -26,8 +26,14 @@ function StarDetail() {
     const star_id = searchParams.get('query');
 
     useEffect(() => {
-        fetchData(API_PATH.STAR_DETAIL, { query: star_id }, false, "Error fetching star details")
-            .then(data => setStarDetail(data))
+        fetchData(SERVLET_ROUTE.STAR_DETAIL, { query: star_id }, false, "Error fetching star details")
+            .then(response => {
+                if (response.status === 200) {
+                    setStarDetail(response.data);
+                } else {
+                    throw new Error('Failed to fetch star detail: status code ' + response.status);
+                }
+            })
             .catch(err => setError(err.message))
             .finally(() => setIsLoading(false));
     }, [star_id]);

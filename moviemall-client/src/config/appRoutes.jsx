@@ -6,5 +6,8 @@ export const APP_ROUTES = {
     MOVIE_DETAIL: '/movie-detail',
     STAR_DETAIL: '/star-detail',
     SHOPPING_CART: '/shopping-cart',
-    PAYMENT: '/payment'
+    PAYMENT: '/payment',
+    EMPLOYEE_DASHBOARD: '/_dashboard',
+    STAR_ADDER: '/_dashboard/star-adder',
+    MOVIE_ADDER: '/_dashboard/movie-adder'
 }

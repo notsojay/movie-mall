@@ -9,17 +9,57 @@
   background-color: #222223;
 }
 
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('/public/fonts/PlayfairDisplay-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Playfair Display Bold';
+  src: url('/public/fonts/PlayfairDisplay-Black.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'OpenSans wght';
+  src: url('/public/fonts/OpenSans-VariableFont_wdth,wght.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cinzel wght';
+  src: url('/public/fonts/Cinzel-VariableFont_wght.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cinzel wght blod';
+  src: url('/public/fonts/Cinzel-ExtraBold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 html, body {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Playfair Display', serif !important;
   background-color: #222223 !important;
   color: white;
   margin: 0;
   padding: 0;
   line-height: 1.5;
   height: 100%;
+  width: 100%;
+}
+
+article {
+  margin: auto 0;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family: 'Playfair Display', source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 

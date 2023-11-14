@@ -17,7 +17,16 @@ public class MovieEntity {
 
     private String director = null;
 
+    @JsonProperty("main_genre")
+    private String mainGenre = null;
+
     private List<String> genres = null;
+
+    @JsonProperty("lead_star_name")
+    private String leadStarName = null;
+
+    @JsonProperty("lead_star_birth_year")
+    private Integer leadStarBirthYear = null;
 
     @JsonProperty("star_ids")
     private List<String> starIds = null;
@@ -112,5 +121,29 @@ public class MovieEntity {
 
     public void setPrice(Float price) {
         this.price = price;
+    }
+
+    public String getLeadStarName() {
+        return leadStarName;
+    }
+
+    public void setLeadStarName(String leadStarName) {
+        this.leadStarName = leadStarName;
+    }
+
+    public Integer getLeadStarBirthYear() {
+        return leadStarBirthYear;
+    }
+
+    public void setLeadStarBirthYear(Integer leadStarBirthYear) {
+        this.leadStarBirthYear = leadStarBirthYear;
+    }
+
+    public String getMainGenre() {
+        return mainGenre;
+    }
+
+    public void setMainGenre(String mainGenre) {
+        this.mainGenre = mainGenre;
     }
 }

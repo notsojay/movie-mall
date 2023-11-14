@@ -42,6 +42,8 @@ export const PaginationButtons = (props) => {
     );
 
     return (
+        requestType === REQUEST_TYPE.GET_TOP20_MOVIES
+            ? null :
         <div className="pagination-body">
             <div className="pagination-container">
                 <div className="steps">

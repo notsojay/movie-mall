@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import static com.utils.DatabaseManager.getSafeColumnValue;
+import static com.db.DatabaseManager.getSafeColumnValue;
 import static com.utils.URLUtils.encodeToBase64;
 
 public class StarAdapter {
@@ -20,8 +20,6 @@ public class StarAdapter {
     private static final Map<String, BiConsumer<StarEntity, String>> STRING_SETTERS = Map.of(
 
             "star_name", StarEntity::setStarName,
-
-            "star_birth_year", StarEntity::setStarBirthYear,
 
             "movie_infos", (star, value) -> {
                 List<String> titles = new ArrayList<>();
@@ -58,6 +56,11 @@ public class StarAdapter {
             if (value != null) {
                 entry.getValue().accept(star, value);
             }
+        }
+
+        Integer year = getSafeColumnValue(rs, "star_birth_year", ResultSet::getInt);
+        if (year != null) {
+            star.setStarBirthYear(year);
         }
 
         return star;

@@ -1,0 +1,41 @@
+.employee-navbar {
+    font-weight: 700;
+    font-size: 1em;
+    overflow-y: auto;
+    min-height: 40px;
+    max-height: 80px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0.7em 5%;
+    background: linear-gradient(160deg, #222223 0%, #34495e 100%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    font-family: 'OpenSans wght';
+}
+
+.employee-navbar .transparent-custom-button {
+    color: white;
+    padding: 0.3em 0.8em;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: all 0.3s ease-in-out;
+    border: 3px solid transparent;
+    margin: 1px 1px 1px 1px;
+    display: inline-block;
+}
+
+.employee-navbar .transparent-custom-button:hover {
+    background: linear-gradient(50deg, #b3bccc 100%, #6173a4 100%);
+    color: #2c3e50;
+    transform: translateY(-2px);
+    box-shadow: 0 0.5em 0.5em -0.4em #b3bccc;
+    border-color: transparent;
+    mix-blend-mode: luminosity;
+}
+
+@media (max-width: 600px) {
+    .navbar .transparent-custom-button {
+        margin: 0.5em 0;
+    }
+}

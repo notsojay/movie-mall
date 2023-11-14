@@ -6,11 +6,12 @@ import java.util.List;
 
 public class StarEntity {
 
+    private String starID = null;
     @JsonProperty("star_name")
     private String starName = null;
 
     @JsonProperty("star_birth_year")
-    private String starBirthYear = null;
+    private Integer starBirthYear = null;
 
     @JsonProperty("movie_directors")
     private List<String> movieDirectors = null;
@@ -36,11 +37,11 @@ public class StarEntity {
         this.starName = starName;
     }
 
-    public String getStarBirthYear() {
+    public Integer getStarBirthYear() {
         return starBirthYear;
     }
 
-    public void setStarBirthYear(String starBirthYear) {
+    public void setStarBirthYear(Integer starBirthYear) {
         this.starBirthYear = starBirthYear;
     }
 
@@ -74,5 +75,13 @@ public class StarEntity {
 
     public void setMovieReleaseYears(List<Integer> movieReleaseYears) {
         this.movieReleaseYears = movieReleaseYears;
+    }
+
+    public String getStarID() {
+        return starID;
+    }
+
+    public void setStarID(String starID) {
+        this.starID = starID;
     }
 }

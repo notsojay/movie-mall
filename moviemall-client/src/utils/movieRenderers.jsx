@@ -78,13 +78,13 @@ export function renderMovieInitialsAsLink(initials, baseLink) {
 export function renderH1(requestType, category) {
     switch (requestType) {
         case REQUEST_TYPE.GET_TOP20_MOVIES:
-            return "Top 20 rated movies";
+            return "Top 20 Rated Movies";
         case REQUEST_TYPE.SEARCH_MOVIES:
-            return "Search result"
+            return "Search Result"
         case REQUEST_TYPE.BROWSE_MOVIES_BY_GENRE:
-            return `Movies in ${category} Genre`;
+            return `Movies In ${category} Genre`;
         case REQUEST_TYPE.BROWSE_MOVIES_BY_INITIAL:
-            return `Movies starting with letter '${category}'`;
+            return `Movies Starting With Letter '${category}'`;
         default:
             return "Movies";
     }

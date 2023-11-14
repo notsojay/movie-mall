@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import static com.utils.DatabaseManager.*;
+import static com.db.DatabaseManager.*;
 import static com.utils.URLUtils.*;
 
 public class MovieAdapter {

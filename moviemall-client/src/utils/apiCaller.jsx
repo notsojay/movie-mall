@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {API_PATH} from "../config/servletPaths";
+import {SERVLET_ROUTE} from "../config/servletRoutes";
 
 export const fetchData = async (endpoint, params, includeCookies = false, errorDescription = "Error fetching data") => {
     try {
@@ -9,7 +9,7 @@ export const fetchData = async (endpoint, params, includeCookies = false, errorD
             params: params,
             withCredentials: includeCookies
         });
-        return response.data;
+        return response;
     } catch (error) {
         console.error(`${errorDescription}:`, error);
         throw error;
@@ -20,10 +20,13 @@ export const postData = async (endpoint, data, includeCookies = false, errorDesc
     try {
         console.log(`Sending POST request to: ${endpoint} with data:`, data);
         const response = await axios.post(endpoint, data, {
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
             withCredentials: includeCookies
         });
-        return response.data;
+        return response;
     } catch (error) {
         console.error(`${errorDescription}:`, error);
         throw error;
@@ -32,14 +35,14 @@ export const postData = async (endpoint, data, includeCookies = false, errorDesc
 
 export const addToCart = async (movieId, movieTitle, moviePrice) => {
     try {
-        const response = await postData(API_PATH.SHOPPING_CART, {
+        const response = await postData(SERVLET_ROUTE.SHOPPING_CART, {
             movieId: movieId,
             movieTitle: movieTitle,
             moviePrice: moviePrice,
             quantity: 1
         }, false, 'Error adding movie to cart');
 
-        if (response && response.status !== 'error') {
+        if (response.status === 200) {
             console.log('Movie updated to cart successfully');
         } else {
             console.error('Failed to add movie to cart');

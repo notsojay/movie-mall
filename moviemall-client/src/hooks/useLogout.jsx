@@ -1,6 +1,6 @@
 import {useContext} from 'react';
 import {AuthContext} from '../context/AuthContext';
-import {API_PATH} from '../config/servletPaths';
+import {SERVLET_ROUTE} from '../config/servletRoutes';
 import axios from "axios";
 
 function useLogout() {
@@ -8,12 +8,12 @@ function useLogout() {
 
     return async () => {
         try {
-            const response = await axios.delete(API_PATH.AUTHENTICATION, {
+            const response = await axios.delete(SERVLET_ROUTE.AUTHENTICATION, {
                 headers: {
                     'Accept': 'application/json'
                 }
             });
-            if (response.data.status === "success") {
+            if (response.status === 200) {
                 setIsLoggedIn(false);
             } else {
                 console.error('Failed to log out:', response.data.message);

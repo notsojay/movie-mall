@@ -1,18 +1,22 @@
 package com.servlets;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.models.MovieEntity;
+import com.models.StarEntity;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.Types;
 
 import static com.adapter.MovieAdapter.convertMovieDtoToJson;
 import static com.adapter.MovieAdapter.extractMovieFromDbResultSet;
-import static com.utils.DatabaseManager.getJNDIDatabaseConnection;
-import static com.utils.DatabaseManager.queryFrom_moviedb;
+import static com.db.DatabaseManager.*;
 import static com.utils.URLUtils.decodeFromBase64;
 
 @WebServlet("/MovieDetailServlet")
@@ -60,7 +64,7 @@ public class MovieDetailServlet extends AbstractServletBase {
             }
             movie_id = decodeFromBase64(movie_id);
 
-            JSONObject finalResult = queryFrom_moviedb(
+            JSONObject finalResult = execDbQuery(
                     conn,
                     SQL_QUERY,
                     rs -> {
@@ -72,7 +76,55 @@ public class MovieDetailServlet extends AbstractServletBase {
             );
 
             if (finalResult == null) throw new ServletException("ERROR: Movie not found");
-            super.sendJsonDataResponse(response, finalResult);
+            super.sendJsonDataResponse(response, HttpServletResponse.SC_OK, finalResult);
+
+        } catch (Exception e) {
+            super.exceptionHandler.handleException(response, e);
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+        try (Connection conn = getJNDIDatabaseConnection()) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            MovieEntity movie = objectMapper.readValue(request.getReader(), MovieEntity.class);
+            String movieTitle = movie.getTitle();
+            Integer releaseYear = movie.getYear();
+            String director = movie.getDirector();
+            String leadStarName = movie.getLeadStarName();
+            Integer leadStarBirthYear = movie.getLeadStarBirthYear();
+            String movieGenre = movie.getMainGenre();
+
+            JSONObject finalResult = execDbProcedure(
+                    conn,
+                    "{CALL add_movie(?, ?, ?, ?, ?, ?, ?, ?, ?)}",
+                    (stmt, hadResults) -> {
+                        if (hadResults) {
+                            String movieId = stmt.getString(7);
+                            String starId = stmt.getString(8);
+                            Integer genreId = stmt.getInt(9);
+
+                            if (movieId != null && starId != null && genreId != 0) {
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put("movie_id", movieId);
+                                jsonObject.put("star_id", starId);
+                                jsonObject.put("genre_id", genreId);
+                                return jsonObject;
+                            }
+                        }
+                        return null;
+                    },
+                    new Object[]{movieTitle, releaseYear, director, leadStarName, leadStarBirthYear, movieGenre, null, null, null},
+                    new int[]{Types.VARCHAR, Types.INTEGER, Types.VARCHAR, Types.VARCHAR, Types.INTEGER, Types.VARCHAR, Types.INTEGER, Types.INTEGER, Types.INTEGER},
+                    new boolean[]{false, false, false, false, false, false, true, true, true}
+            );
+
+            if (finalResult == null) {
+                super.sendStatusResponse(response, HttpServletResponse.SC_BAD_REQUEST, "ERROR: Adding movie");
+                return;
+            }
+
+            super.sendJsonDataResponse(response, HttpServletResponse.SC_OK, finalResult);
 
         } catch (Exception e) {
             super.exceptionHandler.handleException(response, e);

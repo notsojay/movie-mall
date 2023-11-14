@@ -1,43 +1,55 @@
 package com.servlets;
 
 import com.adapter.CustomerAdapter;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.models.CustomerEntity;
-import jakarta.servlet.ServletException;
+import com.models.UserEntity;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.json.JSONObject;
 
-import javax.naming.NamingException;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import static com.adapter.CustomerAdapter.*;
-import static com.utils.DatabaseManager.getJNDIDatabaseConnection;
-import static com.utils.DatabaseManager.queryFrom_moviedb;
+import static com.adapter.CustomerAdapter.convertAuthResponseToJson;
+import static com.adapter.CustomerAdapter.extractPasswordFromDbResultSet;
+import static com.db.DatabaseManager.getJNDIDatabaseConnection;
+import static com.db.DatabaseManager.execDbQuery;
+import static com.utils.ReCaptchaService.verifyRecaptcha;
 
 @WebServlet("/AuthenticationServlet")
 public class AuthenticationServlet extends AbstractServletBase {
-    private static final String SQL_QUERY = """
+    private static final String SQL_QUERY_CUSTOMER = """
             SELECT password
             FROM customers
+            WHERE email = ?;
+            """;
+
+    private static final String SQL_QUERY_EMPLOYEE = """
+            SELECT password
+            FROM employees
             WHERE email = ?;
             """;
 
     public enum AuthResult {
         SUCCESS,
         EMAIL_NOT_FOUND,
-        PASSWORD_INCORRECT
+        PASSWORD_INCORRECT,
+        IS_EMPTY,
+        RECAPTCHA_FAILED
+    }
+
+    @Override
+    public void init() {
+        StrongPasswordEncryptor encryptor = new StrongPasswordEncryptor();
+        getServletContext().setAttribute("encryptor", encryptor);
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(false);
-
         JSONObject jsonResponse = new JSONObject();
 
         if (session != null && session.getAttribute("isLoggedIn") != null && (boolean) session.getAttribute("isLoggedIn")) {
@@ -47,30 +59,30 @@ public class AuthenticationServlet extends AbstractServletBase {
             jsonResponse.put("status", "not-logged-in");
         }
 
-        super.sendJsonDataResponse(response, jsonResponse);
+        super.sendJsonDataResponse(response, HttpServletResponse.SC_OK, jsonResponse);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            CustomerEntity credentials = objectMapper.readValue(request.getReader(), CustomerEntity.class);
+            UserEntity credentials = objectMapper.readValue(request.getReader(), UserEntity.class);
+            String userType = credentials.getUserType();
             String email = credentials.getEmail();
             String password = credentials.getPassword();
+            String captchaValue = credentials.getCaptchaValue();
 
-            if (email == null || password == null) {
-                throw new ServletException("ERROR: Empty Username/Password");
-            }
-
-            AuthResult authResult = authenticate(email, password, request);
+            AuthResult authResult = authenticate(request, userType, email, password, captchaValue);
 
             JSONObject jsonResponse = switch (authResult) {
-                case SUCCESS -> convertStatusResponseToJson("success", "Logged in successfully");
-                case PASSWORD_INCORRECT -> convertStatusResponseToJson("error", "Incorrect password");
-                case EMAIL_NOT_FOUND -> convertStatusResponseToJson("error", "Username not found");
+                case SUCCESS -> convertAuthResponseToJson("success", "Logged in successfully");
+                case PASSWORD_INCORRECT -> convertAuthResponseToJson("error", "Incorrect password");
+                case EMAIL_NOT_FOUND -> convertAuthResponseToJson("error", "Username not found");
+                case IS_EMPTY -> convertAuthResponseToJson("error", "Empty content");
+                case RECAPTCHA_FAILED -> convertAuthResponseToJson("error", "Recaptcha verification failed");
             };
 
-            super.sendJsonDataResponse(response, jsonResponse);
+            super.sendJsonDataResponse(response, HttpServletResponse.SC_OK, jsonResponse);
 
         } catch (Exception e) {
             super.exceptionHandler.handleException(response, e);
@@ -85,38 +97,44 @@ public class AuthenticationServlet extends AbstractServletBase {
                 session.invalidate();
             }
 
-            JSONObject jsonResponse = CustomerAdapter.convertStatusResponseToJson("success", "Logged out successfully");
-            super.sendJsonDataResponse(response, jsonResponse);
+            JSONObject jsonResponse = CustomerAdapter.convertAuthResponseToJson("success", "Logged out successfully");
+            super.sendJsonDataResponse(response, HttpServletResponse.SC_OK, jsonResponse);
 
         } catch (Exception e) {
             super.exceptionHandler.handleException(response, e);
         }
     }
 
-    private AuthResult authenticate(String email, String password, HttpServletRequest request) throws SQLException, NamingException, JsonProcessingException {
+    private AuthResult authenticate(HttpServletRequest request, String userType, String email, String password, String captchaValue) throws Exception {
         try (Connection conn = getJNDIDatabaseConnection()) {
 
-            String storedPassword = queryFrom_moviedb(
+            if (!verifyRecaptcha(captchaValue)) {
+                return AuthResult.RECAPTCHA_FAILED;
+            }
+            if (email == null || password == null) {
+                return AuthResult.IS_EMPTY;
+            }
+
+            String sqlQuery = userType.equals("employee") ? SQL_QUERY_EMPLOYEE : SQL_QUERY_CUSTOMER;
+
+            return execDbQuery(
                     conn,
-                    SQL_QUERY,
+                    sqlQuery,
                     rs -> {
-                        if (!rs.next()) return null;
-                        return extractPasswordFromDbResultSet(rs);
+                        if (!rs.next()) return AuthResult.EMAIL_NOT_FOUND;
+                        String encryptedPwd = extractPasswordFromDbResultSet(rs);
+                        StrongPasswordEncryptor encryptor = (StrongPasswordEncryptor) getServletContext().getAttribute("encryptor");
+                        if (encryptor.checkPassword(password, encryptedPwd)) {
+                            HttpSession session = request.getSession(true);
+                            session.setAttribute("userEmail", email);
+                            session.setAttribute("isLoggedIn", true);
+                            session.setMaxInactiveInterval(60 * 30);
+                            return AuthResult.SUCCESS;
+                        }
+                        return AuthResult.PASSWORD_INCORRECT;
                     },
                     email
             );
-
-            if (storedPassword == null) {
-                return AuthResult.EMAIL_NOT_FOUND;
-            } else if (!storedPassword.equals(password)) {
-                return AuthResult.PASSWORD_INCORRECT;
-            } else {
-                HttpSession session = request.getSession(true);
-                session.setAttribute("userEmail", email);
-                session.setAttribute("isLoggedIn", true);
-                session.setMaxInactiveInterval(60 * 30);
-                return AuthResult.SUCCESS;
-            }
         }
     }
 }

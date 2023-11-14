@@ -5,14 +5,13 @@
 /*    padding: 0;*/
 /*}*/
 
-
 .modalBackground {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.35);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -25,82 +24,99 @@
     right: 15px;
     background: transparent;
     border: none;
-    font-size: 24px;
+    font-size: 30px;
     font-weight: bold;
     color: white;
     cursor: pointer;
     opacity: 0.8;
-    transition: opacity 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
 }
 
 .closeModalX:hover {
-    opacity: 1;
+    opacity: 1.5;
+    transform: scale(1.2);
 }
 
 .center {
-    /*width: 100%;*/
-    /*height: 100%;*/
-    /*display: flex;*/
-    /*align-items: center;*/
-    /*justify-content: center;*/
-    /*background-size: cover;*/
-    position: relative;
-    width: 420px;
-    height: 490px;
-    max-width: 420px;
-    max-height: 500px;
-    background: #040717;
-    border-radius: 50px 5px;
+    /*width: 440px;*/
+    /*height: 560px;*/
+    /*border-radius: 50px 5px;*/
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     margin-top: 70px;
     box-sizing: border-box;
+    transform: scale(0.95);
+    transition: all 0.3s ease-in-out;
+    position: absolute; /* Needed for z-index to work */
+    z-index: 20; /* Ensure z-index is higher than video background */
 }
 
-.center::before{
-    position: absolute;
-    width: 170%;
-    height: 170%;
-    content: '';
-    background-image: conic-gradient(transparent, transparent, transparent, #b3a4e6);
-    animation: rotate_border 6s linear infinite;
+.center:hover {
+    transform: scale(0.96);
 }
 
-.center::after{
-    position: absolute;
-    width: 170%;
-    height: 170%;
-    content: '';
-    background-image: conic-gradient(transparent, transparent, transparent, #999999);
-    animation: rotate_border 6s linear infinite;
-    animation-delay: -3s;
+/*.center::before{*/
+/*    position: absolute;*/
+/*    width: 170%;*/
+/*    height: 170%;*/
+/*    content: '';*/
+/*    background-image: conic-gradient(transparent, transparent, transparent, #508ff5);*/
+/*    animation: rotate_border 6s linear infinite;*/
+/*}*/
+
+/*.center::after{*/
+/*    position: absolute;*/
+/*    width: 170%;*/
+/*    height: 170%;*/
+/*    content: '';*/
+/*    background-image: conic-gradient(transparent, transparent, transparent, #ffffff);*/
+/*    animation: rotate_border 6s linear infinite;*/
+/*    animation-delay: -3s;*/
+/*}*/
+
+/*@keyframes rotate_border{*/
+/*    0%{*/
+/*        transform: rotate(0deg);*/
+/*    }*/
+/*    100%{*/
+/*        transform: rotate(360deg);*/
+/*    }*/
+/*}*/
+
+/*form {*/
+/*    position: absolute;*/
+/*    content: '';*/
+/*    background-color: #0c1022;*/
+/*    border-radius: 50px 5px;*/
+/*    inset: 5px;*/
+/*    padding: 50px 40px;*/
+/*    z-index: 20;*/
+/*    color: #00ccff;*/
+/*}*/
+
+.login-form {
+    overflow: auto;
+    position: relative;
+    background-color: hsla(0, 0%, 10%, 0.2);
+    border: 2px solid var(--white-color);
+    margin-inline: 1.5rem;
+    padding: 2rem 1.5rem;
+    border-radius: 1rem;
+    transform: scale(0.95);
+    backdrop-filter: blur(25px);
+    box-shadow: 0 4px 8px rgba(235, 235, 235, 0.4);
 }
 
-@keyframes rotate_border{
-    0%{
-        transform: rotate(0deg);
+@media (max-width: 700px) {
+    form {
+        transform: scale(0.8);
     }
-    100%{
-        transform: rotate(360deg);
-    }
-}
-
-form {
-    position: absolute;
-    content: '';
-    background-color: #0c1022;
-    border-radius: 50px 5px;
-    inset: 5px;
-    padding: 50px 40px;
-    z-index: 10;
-    color: #00ccff;
 }
 
 .title {
     width: 100%;
-    font-family: poppins;
     font-size: 34px;
     text-align: center;
     margin-bottom: 10px;
@@ -134,7 +150,6 @@ form {
     border-bottom: 0.55mm solid rgb(255, 255, 255);
     background: none;
     padding: 0 15px;
-    font-family: poppins;
     font-size: 16px;
     color: white;
     outline: none;
@@ -152,7 +167,6 @@ form {
     color: white;
     font-size: 13px;
     font-weight: 500;
-    font-family: poppins;
     opacity: 0;
     z-index: -1;
     transition: 0.25s ease-out;
@@ -189,8 +203,7 @@ form {
     align-items: center;
     justify-content: space-between;
     font-size: 12px;
-    font-family: poppins;
-    margin-bottom: 45px;
+    margin-bottom: 15px;
     margin-top: -5px;
     color: white;
 }
@@ -212,22 +225,26 @@ form {
     outline: none;
     border: none;
     cursor: pointer;
-    border-radius: 6mm;
+    border-radius: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 10px;
+    transition: all 0.3s ease-in-out;
 }
 
 .btn span {
     color: rgb(40, 40, 40);
-    font-family: poppins;
     font-size: 20px;
     font-weight: 600;
 }
 
-.btn.transparent-custom-button {
-    display: flex;
+.btn:hover {
+    background: linear-gradient(50deg, #b3bccc 100%, #6173a4 100%);
+    color: #2c3e50;
+    box-shadow: 0 0.5em 0.5em -0.4em #b3bccc;
+    border-color: transparent;
+    mix-blend-mode: luminosity;
 }
 
 .dots {
@@ -281,7 +298,6 @@ form {
 
 .text {
     width: 100%;
-    font-family: poppins;
     margin-top: 0.7em;
     font-size: 14px;
     text-align: center;
@@ -293,12 +309,28 @@ form {
     font-weight: 600;
 }
 
+.login-recaptcha {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 15px;
+    transform: scale(0.95);
+    transform-origin: center;
+}
+
+@media (max-width: 768px) {
+    .login-recaptcha {
+        transform: scale(0.77);
+        transform-origin: center;
+        margin-left: -14%;
+    }
+}
+
 .error-message {
     border: 1px solid #ff4b5c;
     padding: 5px 10px;
-    background-color: #000;
+    /*background-color: #000;*/
     border-radius: 4px;
-    font-family: poppins;
     color: #ff4b5c;
     text-align: center;
     font-weight: 500;
@@ -309,6 +341,8 @@ form {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    background-color: hsla(0, 0%, 10%, 0.3);
+    backdrop-filter: blur(100px);
 }
 
 .error-shake {

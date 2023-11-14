@@ -24,17 +24,9 @@ public class ShoppingCartServlet extends AbstractServletBase {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
             HttpSession session = request.getSession();
-            Map<String, CartItem> cart = getCart(session);
-            JSONArray jsonArray = new JSONArray();
-
-            for (Map.Entry<String, CartItem> entry : cart.entrySet()) {
-                JSONObject itemJson = new JSONObject();
-                CartItem item = entry.getValue();
-                itemJson = convertShoppingCartToJson(item);
-                jsonArray.put(itemJson);
-            }
-
-            super.sendJsonDataResponse(response, jsonArray);
+            Map<String, CartItem> cart = getShoppingCart(session);
+            JSONArray jsonArray = convertShoppingCartToJson(cart);
+            super.sendJsonDataResponse(response, HttpServletResponse.SC_OK, jsonArray);
 
         } catch (Exception e) {
             super.exceptionHandler.handleException(response, e);
@@ -46,7 +38,7 @@ public class ShoppingCartServlet extends AbstractServletBase {
             ObjectMapper objectMapper = new ObjectMapper();
             CartItem cartItem = objectMapper.readValue(request.getReader(), CartItem.class);
             HttpSession session = request.getSession();
-            Map<String, CartItem> cart = getCart(session);
+            Map<String, CartItem> cart = getShoppingCart(session);
             CartItem existingCartItem = cart.get(cartItem.getMovieId());
             JSONObject jsonResponse;
 
@@ -61,22 +53,14 @@ public class ShoppingCartServlet extends AbstractServletBase {
                 if (cartItem.getQuantity() > 0) {
                     cart.put(cartItem.getMovieId(), cartItem);
                 } else {
-                    jsonResponse = CustomerAdapter.convertStatusResponseToJson("error", "Invalid quantity");
-                    super.sendJsonDataResponse(response, jsonResponse);
+                    jsonResponse = CustomerAdapter.convertAuthResponseToJson("error", "Invalid quantity");
+                    super.sendJsonDataResponse(response, HttpServletResponse.SC_BAD_REQUEST, jsonResponse);
                     return;
                 }
             }
 
-            JSONArray jsonArray = new JSONArray();
-
-            for (Map.Entry<String, CartItem> entry : cart.entrySet()) {
-                JSONObject itemJson = new JSONObject();
-                CartItem item = entry.getValue();
-                itemJson = convertShoppingCartToJson(item);
-                jsonArray.put(itemJson);
-            }
-
-            super.sendJsonDataResponse(response, jsonArray);
+            JSONArray jsonArray = convertShoppingCartToJson(cart);
+            super.sendJsonDataResponse(response, HttpServletResponse.SC_OK, jsonArray);
             session.setAttribute("cart", cart);
             logger.info(jsonArray.toString());
 
@@ -89,25 +73,28 @@ public class ShoppingCartServlet extends AbstractServletBase {
         try {
             String movieId = request.getParameter("movieId");
             HttpSession session = request.getSession();
-            Map<String, CartItem> cart = getCart(session);
+            Map<String, CartItem> cart = getShoppingCart(session);
             JSONObject jsonResponse = null;
+            int status = HttpServletResponse.SC_OK;
 
             if (cart.containsKey(movieId)) {
                 cart.remove(movieId);
                 session.setAttribute("cart", cart);
-                jsonResponse = CustomerAdapter.convertStatusResponseToJson("success", "Movie removed from cart successfully");
+                jsonResponse = CustomerAdapter.convertAuthResponseToJson("success", "Movie removed from cart successfully");
+
             } else {
-                jsonResponse = CustomerAdapter.convertStatusResponseToJson("success", "Movie not found in cart");
+                jsonResponse = CustomerAdapter.convertAuthResponseToJson("error", "Movie not found in cart");
+                status = HttpServletResponse.SC_BAD_REQUEST;
             }
 
-            super.sendJsonDataResponse(response, jsonResponse);
+            super.sendJsonDataResponse(response, status, jsonResponse);
 
         } catch (Exception e) {
             super.exceptionHandler.handleException(response, e);
         }
     }
 
-    public static Map<String, CartItem> getCart(HttpSession session) {
+    public static Map<String, CartItem> getShoppingCart(HttpSession session) {
         if (session == null) {
             throw new IllegalStateException("Session should not be null");
         }

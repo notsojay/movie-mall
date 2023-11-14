@@ -1,33 +1,31 @@
 import {useState} from 'react';
-import {API_PATH} from "../config/servletPaths";
+import {SERVLET_ROUTE} from "../config/servletRoutes";
 import {useAuth} from "./useAuth";
-import axios from "axios";
+import {postData} from "../utils/apiCaller";
 
 function useLogin() {
     const [loginResponse, setLoginResponse] = useState(null);
     const { setIsLoggedIn } = useAuth();
 
-    const login = async (email, password) => {
+    const login = async (email, password, captchaValue, userType='customer') => {
         try {
-            const response = await axios.post(API_PATH.AUTHENTICATION, {
-                    email, password
-                }, {
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-            });
+            const response = await postData(SERVLET_ROUTE.AUTHENTICATION, {
+                email: email,
+                password: password,
+                captchaValue: captchaValue,
+                userType: userType
+            }, false, "An error occurred while trying to log in.");
+
             setLoginResponse(response.data.status);
+
             if (response.data.status !== 'success') {
                 return response.data.message;
             } else if (response.data.status === 'success') {
                 setIsLoggedIn(true);
                 return "";
             }
-
         } catch (err) {
-            console.error('Error:', err.response ? err.response.data.message : err.message);
-            return "An error occurred while trying to log in.";
+            console.error('Error: ', err.response ? err.response?.message : err.message);
         }
     };
 

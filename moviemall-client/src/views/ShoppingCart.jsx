@@ -1,31 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import {addToCart, fetchData, postData, updateToCart} from "../utils/apiCaller";
-import {API_PATH} from "../config/servletPaths";
+import {fetchData, postData} from "../utils/apiCaller";
+import {SERVLET_ROUTE} from "../config/servletRoutes";
 
 import '../assets/styles/page.css';
 import '../assets/styles/table.css';
-import '../assets/styles/payment.css'
+import '../assets/styles/payment-form.css'
 import '../assets/styles/link.css'
-import {APP_ROUTES} from "../config/appRoutes";
 import {Link} from "react-router-dom";
+import PaymentForm from "../components/PaymentForm";
 
 function ShoppingCart() {
     const [shoppingCart, setShoppingCart] = useState(null);
     const [totalAmount, setTotalAmount] = useState(0);
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const updateToCart = (movieId, movieTitle, moviePrice, quantity) => {
-        postData(API_PATH.SHOPPING_CART, {
+
+        postData(SERVLET_ROUTE.SHOPPING_CART, {
             movieId: movieId,
             movieTitle: movieTitle,
             moviePrice: moviePrice,
             quantity: quantity
         }, false, 'Error adding movie to cart')
-            .then(data => {
-                setShoppingCart(data);
-                if (data != null) {
-                    const total = data.reduce((acc, item) => acc + (item.moviePrice * item.quantity), 0);
+            .then(response => {
+                if (response.status === 200) {
+                    setShoppingCart(response?.data);
+                    const total = response.data?.reduce((acc, item) => acc + (item.moviePrice * item.quantity), 0);
                     setTotalAmount(total);
                 }
             })
@@ -34,12 +36,16 @@ function ShoppingCart() {
     };
 
     useEffect(() => {
-        fetchData(API_PATH.SHOPPING_CART, null, true, "Error fetching cart total")
-            .then(data => {
-                setShoppingCart(data);
-                if (data != null) {
-                    const total = data.reduce((acc, item) => acc + (item.moviePrice * item.quantity), 0);
-                    setTotalAmount(total);
+        fetchData(SERVLET_ROUTE.SHOPPING_CART, null, true, "Error fetching cart total")
+            .then(response => {
+                if (response.status === 200) {
+                    setShoppingCart(response.data);
+                    if (response.data != null) {
+                        const total = response.data.reduce((acc, item) => acc + (item.moviePrice * item.quantity), 0);
+                        setTotalAmount(total);
+                    }
+                } else {
+                    throw new Error('Failed to fetch shopping cart: status code ' + response.status);
                 }
             })
             .catch(err => setError(err.message))
@@ -47,7 +53,7 @@ function ShoppingCart() {
     }, []);
 
     useEffect(() => {
-        if (shoppingCart) {
+        if (Array.isArray(shoppingCart)) {
             const total = shoppingCart.reduce((acc, item) => acc + (item.moviePrice * item.quantity), 0);
             setTotalAmount(total);
         }
@@ -105,9 +111,13 @@ function ShoppingCart() {
                         </tr>
                     </tbody>
                 </table>
-                <Link className="payment-custom-button" to={`${APP_ROUTES.PAYMENT}?total-amount=${totalAmount}`}>
+                {/*<Link className="payment-custom-button" to={`${APP_ROUTES.PAYMENT}?total-amount=${totalAmount}`}>*/}
+                {/*    Process payment*/}
+                {/*</Link>*/}
+                <Link className="payment-custom-button" onClick={(e) => { e.preventDefault(); setShowPaymentModal(true); }} to="#">
                     Process payment
                 </Link>
+                {showPaymentModal && <PaymentForm totalAmount={totalAmount} onClose={() => setShowPaymentModal(false)} />}
             </React.Fragment>
         </div>
     );

@@ -1,5 +1,6 @@
 package com.servlets;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.models.StarEntity;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -8,15 +9,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
 import java.sql.Connection;
+import java.sql.Types;
 
 import static com.adapter.StarAdapter.*;
-import static com.utils.DatabaseManager.*;
+import static com.db.DatabaseManager.*;
 import static com.utils.URLUtils.decodeFromBase64;
 
 @WebServlet("/StarDetailServlet")
 public class StarDetailServlet extends AbstractServletBase {
 
-    private static final String SQL_QUERY = """
+    private static final String SELECT_SQL_QUERY = """
             SELECT
                 s.name AS star_name,
                 s.birthYear AS star_birth_year,
@@ -40,9 +42,9 @@ public class StarDetailServlet extends AbstractServletBase {
             }
             star_id = decodeFromBase64(star_id);
 
-            JSONObject finalResult = queryFrom_moviedb(
+            JSONObject finalResult = execDbQuery(
                     conn,
-                    SQL_QUERY,
+                    SELECT_SQL_QUERY,
                     rs -> {
                         if (!rs.next()) return null;
                         StarEntity star = extractStarFromDbResultSet(rs);
@@ -52,7 +54,38 @@ public class StarDetailServlet extends AbstractServletBase {
             );
 
             if (finalResult == null) throw new ServletException("ERROR: Star not found");
-            super.sendJsonDataResponse(response, finalResult);
+            super.sendJsonDataResponse(response, HttpServletResponse.SC_OK, finalResult);
+
+        } catch (Exception e) {
+            super.exceptionHandler.handleException(response, e);
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+        try (Connection conn = getJNDIDatabaseConnection()) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            StarEntity star = objectMapper.readValue(request.getReader(), StarEntity.class);
+            String starName = star.getStarName();
+            Integer starBirthYear = star.getStarBirthYear();
+
+            String newStarID = execDbProcedure(
+                    conn,
+                    "{CALL add_star(?, ?, ?)}",
+                    (stmt, hadResults) -> stmt.getString(3),
+                    new Object[]{starName, starBirthYear, null},
+                    new int[]{Types.VARCHAR, Types.INTEGER, Types.VARCHAR},
+                    new boolean[]{false, false, true}
+            );
+
+            if (newStarID == null) {
+                super.sendStatusResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "ERROR: Adding star");
+                return;
+            }
+
+            JSONObject jsonResponse = new JSONObject();
+            jsonResponse.put("new_star_id", newStarID);
+            super.sendJsonDataResponse(response, HttpServletResponse.SC_OK, jsonResponse);
 
         } catch (Exception e) {
             super.exceptionHandler.handleException(response, e);

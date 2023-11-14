@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {useSearchParams} from "react-router-dom";
 import {renderMovieTitleAsHeader, renderMovieGenresAsLink, renderBasicProperty} from '../utils/movieRenderers';
 import {renderStarsAsLink} from '../utils/starRenderers';
-import {API_PATH} from "../config/servletPaths";
+import {SERVLET_ROUTE} from "../config/servletRoutes";
 import {APP_ROUTES} from "../config/appRoutes";
 import {addToCart, fetchData, postData} from "../utils/apiCaller";
 
@@ -10,6 +10,7 @@ import '../assets/styles/table.css';
 import '../assets/styles/header.css';
 import '../assets/styles/link.css';
 import '../assets/styles/page.css';
+import SubscribeSection from "../components/SubscribeSection";
 
 function MovieDetail() {
     const [movieDetail, setMovieDetail] = useState({
@@ -28,8 +29,14 @@ function MovieDetail() {
     const movie_id = searchParams.get('query');
 
     useEffect(() => {
-        fetchData(API_PATH.MOVIE_DETAIL, { query: movie_id}, false, "Error fetching star details")
-            .then(data => setMovieDetail(data))
+        fetchData(SERVLET_ROUTE.MOVIE_DETAIL, { query: movie_id}, false, "Error fetching star details")
+            .then(response => {
+                if (response.status === 200) {
+                    setMovieDetail(response.data);
+                } else {
+                    throw new Error('Failed to fetch movie detail: status code ' + response.status);
+                }
+            })
             .catch(err => setError(err.message))
             .finally(() => setIsLoading(false));
     }, [movie_id]);

@@ -37,6 +37,17 @@
     mix-blend-mode: screen;
 }
 
+.browsing .link {
+    font-weight: 700;
+    position: relative;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+    border-bottom: 2px solid transparent;
+    transform: translateY(0);
+    display: inline-block;
+}
+
 .genre-space {
     margin-right: 1rem;
 }

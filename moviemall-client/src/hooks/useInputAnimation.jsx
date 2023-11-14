@@ -1,16 +1,16 @@
 import {useState} from 'react';
 
 function useInputAnimation() {
-    const [isActive, setIsActive] = useState(false);
+    const [isAnimationActive, setIsAnimationActive] = useState(false);
 
     const animateInput = () => {
-        setIsActive(true);
+        setIsAnimationActive(true);
         setTimeout(() => {
-            setIsActive(false);
+            setIsAnimationActive(false);
         }, 3000);
     };
 
-    return [animateInput, setIsActive, isActive];
+    return [animateInput, isAnimationActive, setIsAnimationActive];
 }
 
 export default useInputAnimation;

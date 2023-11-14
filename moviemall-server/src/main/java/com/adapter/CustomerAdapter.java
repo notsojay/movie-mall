@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 import java.sql.ResultSet;
 
-import static com.utils.DatabaseManager.getSafeColumnValue;
+import static com.db.DatabaseManager.getSafeColumnValue;
 
 public class CustomerAdapter {
 
@@ -12,7 +12,7 @@ public class CustomerAdapter {
         return getSafeColumnValue(rs, "password", ResultSet::getString);
     }
 
-    public static JSONObject convertStatusResponseToJson(String status, String message) {
+    public static JSONObject convertAuthResponseToJson(String status, String message) {
         JSONObject jsonResponse = new JSONObject();
         jsonResponse.put("status", status);
         jsonResponse.put("message", message);

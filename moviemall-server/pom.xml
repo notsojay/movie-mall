@@ -57,10 +57,26 @@
       <artifactId>jackson-databind</artifactId>
       <version>2.15.2</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.10.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jasypt</groupId>
+      <artifactId>jasypt</artifactId>
+      <version>1.9.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <version>13.0</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 
   <build>
-    <finalName>moviemall-server</finalName>
+    <finalName>server</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

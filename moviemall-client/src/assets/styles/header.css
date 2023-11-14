@@ -1,13 +1,53 @@
 h1 {
     text-align: center;
-    margin: 1.5em 0 0.5em;
-    font-size: 2.2em;
+    margin: 1.5em 0 0.1em;
+    font-size: 2.3em;
     font-weight: 700;
+    font-family: 'Cinzel wght blod';
     color: white;
     /*text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.8), -2px -2px 4px rgba(255, 255, 255, 0.3);*/
     text-shadow: 6px 6px 8px rgba(255, 255, 255, 0.8);
     letter-spacing: 3px;
+    position: relative;
+    z-index: 10;
+}
+
+.home-h1 {
+    letter-spacing: 8px;
+    font-size: 3rem;
+    margin: 4em 0 0.1em;
+}
+
+.adder-container h1 {
+    font-family: Helvetica;
+    text-shadow: none;
+}
+
+.employee-dashboard-container h1,
+.employee-dashboard-container h3 {
+    text-align: center;
+    font-family: 'Helvetica';
+    color: white;
+    position: relative;
     letter-spacing: 3px;
+    font-size: 2.2rem;
+    margin-bottom: -30px;
+    margin-top: 70px;
+    text-shadow: none;
+}
+
+.employee-dashboard-container h3 {
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+.browsing h2 {
+    text-align: center;
+    font-family: 'Cinzel wght';
+    color: white;
+    text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.8), -2px -2px 4px rgba(255, 255, 255, 0.3);
+    position: relative;
+    z-index: 10;
 }
 
 @keyframes animate {
@@ -19,8 +59,8 @@ h1 {
 .year-class {
     font-size: 0.7em;
     margin-left: 0.8em;
-    color: #7f8c8d;
-    text-shadow: 2px 2px 90px;
+    color: #ced1d1;
+    text-shadow: 0 0 90px;
 }
 
 .browsing {
@@ -33,6 +73,8 @@ h1 {
     /*border-radius: 5px;*/
     /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/
     transition: all 0.3s ease-in-out;
+    position: relative;
+    z-index: 10;
 }
 
 .browsing:hover {
@@ -46,17 +88,17 @@ h1 {
     align-items: center;
 }
 
-.genres > h1, .initials > h1 {
+.genres > h2, .initials > h2 {
     width: 100%;
     text-align: center;
-    font-size: 2.5rem;
+    font-size: 2rem;
     margin-bottom: 25px;
 }
 
 .genres > .link, .initials > .link {
     display: inline-block;
     margin: 0 20px 20px 20px;
-    font-size: 1.7rem;
+    font-size: 1.4rem;
 }
 
 @media (max-width: 600px) {

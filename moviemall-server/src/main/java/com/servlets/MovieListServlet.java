@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import static com.adapter.MovieAdapter.*;
-import static com.utils.DatabaseManager.*;
-import static com.utils.OtherUtils.*;
+import static com.db.DatabaseManager.*;
+import static com.utils.ConversionUtils.*;
 
 @WebServlet("/MovieListServlet")
 public class MovieListServlet extends AbstractServletBase {
@@ -71,7 +71,7 @@ public class MovieListServlet extends AbstractServletBase {
             ) AS subquery ON m.id = subquery.movieId
          """;
 
-    private static final String SQL_QUERY_SUFFIX = " WHERE subquery.rating IS NOT NULL ";
+    private static final String SQL_QUERY_SUFFIX = " WHERE 1=1 ";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
@@ -90,7 +90,12 @@ public class MovieListServlet extends AbstractServletBase {
                 default -> throw new ServletException("ERROR: Unknown type of request");
             }
 
-            JSONArray finalResult = queryFrom_moviedb(
+            if (requestParams.movieRequestType == MovieRequestType.SEARCH_MOVIES && queryParams.size() == 0) {
+                super.sendJsonDataResponse(response, HttpServletResponse.SC_OK, new JSONArray());
+                return;
+            }
+
+            JSONArray finalResult = execDbQuery(
                     conn,
                     finalQuery.toString(),
                     rs -> {
@@ -106,7 +111,7 @@ public class MovieListServlet extends AbstractServletBase {
             );
 
             if (finalResult == null) throw new ServletException("ERROR: Movies not found");
-            super.sendJsonDataResponse(response, finalResult);
+            super.sendJsonDataResponse(response, HttpServletResponse.SC_OK, finalResult);
 
         } catch (Exception e) {
             super.exceptionHandler.handleException(response, e);
@@ -192,6 +197,8 @@ public class MovieListServlet extends AbstractServletBase {
         String year = request.getParameter("year");
         String director = request.getParameter("director");
         String starName = request.getParameter("starName");
+
+        if (title == null && year == null && director == null && starName == null) return;
 
         finalQuery.append(SQL_QUERY_PREFIX);
         finalQuery.append(SQL_QUERY_SUFFIX);

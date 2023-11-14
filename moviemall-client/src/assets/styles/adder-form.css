@@ -1,0 +1,117 @@
+/*.adder-container {*/
+/*    position: relative;*/
+/*    width: 550px;*/
+/*    height: 46vw;*/
+/*    background: #222223;*/
+/*    border-radius: 50px 5px;*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    overflow: hidden;*/
+/*    box-sizing: border-box;*/
+/*    transition: all 0.3s ease-in-out;*/
+/*    transform: scale(0.9);*/
+/*    font-family: "Helvetica";*/
+/*}*/
+
+.adder-container form {
+    position: relative;
+    content: '';
+    background-color: #222223;
+    inset: 5px;
+    z-index: 10;
+    overflow: auto;
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.adder-input-group {
+    margin-bottom: 10px;
+    margin-top: 40px;
+}
+
+.adder-container input {
+    width: 100%;
+    height: 45px;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 0.55mm solid rgb(255, 255, 255);
+    background: none;
+    padding: 0 15px;
+    font-size: 1rem;
+    color: white;
+    outline: none;
+    contain: layout;
+    margin-bottom: 30px;
+}
+
+.adder-container input:focus {
+    outline: none;
+    border-color: white;
+    box-shadow: 0 0 0 0.2rem rgba(150, 150, 150, 0.25);
+}
+
+.adder-container button {
+    width: 100%;
+    height: 47px;
+    background: white;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    transition: all 0.3s ease-in-out;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.adder-container button:hover {
+    background: linear-gradient(50deg, #b3bccc 100%, #6173a4 100%);
+    color: #2c3e50;
+    box-shadow: 0 0.5em 0.5em -0.4em #b3bccc;
+    border-color: transparent;
+    mix-blend-mode: luminosity;
+}
+
+.adder-container button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.adder-container p {
+    color: #28a745;
+    margin-top: 1rem;
+    font-family: Helvetica;
+    text-align: center;
+    font-weight: 700;
+    font-size: 16px;
+    white-space: nowrap;
+    max-width: 80%;
+    overflow: hidden;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: -20px;
+    padding: 5px 10px;
+    background: none;
+    border-radius: 4px;
+}
+
+.adder-container .message.success {
+    border: 1px solid #3cb371;
+    color: #2e8b57;
+    margin-bottom: 40px;
+}
+
+.adder-container .message.error {
+    border: 1px solid #ff4b5c;
+    color: #ff4b5c;
+}
+
+
