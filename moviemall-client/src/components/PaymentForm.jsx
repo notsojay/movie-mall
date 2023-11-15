@@ -1,6 +1,6 @@
 import {postData} from "../utils/apiCaller";
 import {SERVLET_ROUTE} from "../config/servletRoutes";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 
 import '../assets/styles/payment-form.css'
 import {useLocation, useSearchParams} from "react-router-dom";
@@ -10,12 +10,20 @@ function PaymentForm({ totalAmount, onClose }) {
     const [searchParams] = useSearchParams();
     const [message, setMessage] = useState(null);
     const [captchaValue, setCaptchaValue] = useState(null);
+    const recaptchaRef = useRef(null);
     const [creditCardInfo, setCreditCardInfo] = useState({
         firstName: '',
         lastName: '',
         cardNumber: '',
         expiryDate: ''
     });
+
+    const resetCaptcha = () => {
+        if (recaptchaRef.current) {
+            recaptchaRef.current.reset();
+        }
+        setCaptchaValue(null);
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -39,6 +47,7 @@ function PaymentForm({ totalAmount, onClose }) {
             })
             .catch(error => {
                 console.error('Error submitting order:', error);
+                resetCaptcha();
                 setMessage({ type: 'error', text: 'Error submitting order. Please try again.' });
             });
     };
@@ -95,6 +104,7 @@ function PaymentForm({ totalAmount, onClose }) {
                     </div>
                     <div className="final-amount">Final Payment: ${totalAmount.toFixed(2)}</div>
                     <ReCAPTCHA
+                        ref={recaptchaRef}
                         sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
                         onChange={handleCaptchaChange}
                         className="payment-recaptcha"

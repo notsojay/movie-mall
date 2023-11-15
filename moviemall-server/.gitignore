@@ -41,3 +41,5 @@ node_modules/
 /src/main/resources/db/
 /scripts/
 .env
+/db/**
+/result_output/**

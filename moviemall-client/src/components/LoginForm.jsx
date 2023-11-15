@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import useLogin from '../hooks/useLogin';
 import useInputAnimation from '../hooks/useInputAnimation';
 import ReCAPTCHA from 'react-google-recaptcha';
@@ -14,6 +14,14 @@ function LoginForm({ onClose, userType }) {
     const [animateInput, isAnimationActive, setIsAnimationActive] = useInputAnimation();
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const recaptchaRef = useRef(null);
+
+    const resetCaptcha = () => {
+        if (recaptchaRef.current) {
+            recaptchaRef.current.reset();
+        }
+        setCaptchaValue(null);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -29,13 +37,19 @@ function LoginForm({ onClose, userType }) {
             setIsAnimationActive(false);
             return;
         }
-
         const isErrorMessage = await login(email, password, captchaValue, userType);
         console.log(isErrorMessage);
         if (isErrorMessage) {
             setError(isErrorMessage);
             setIsAnimationActive(false);
+            resetCaptcha();
+        } else {
+            setEmail('');
+            setPassword('');
+            setCaptchaValue(null);
+            resetCaptcha();
         }
+        setIsLoading(false);
     };
     const handleCaptchaChange = (value) => {
         setCaptchaValue(value);
@@ -86,6 +100,7 @@ function LoginForm({ onClose, userType }) {
                         </label>
                     </div>
                     <ReCAPTCHA
+                        ref={recaptchaRef}
                         sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
                         onChange={handleCaptchaChange}
                         className="login-recaptcha"

@@ -63,4 +63,15 @@ public class ConversionUtils {
         }
         return sessionValue != null ? sessionValue : defaultValue;
     }
+
+    public static Integer extractYear(String yearString) {
+        try {
+            if (yearString.length() < 4 || !yearString.matches("^\\d{4}$")) {
+                return null;
+            }
+            return Integer.parseInt(yearString.substring(0, 4));
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

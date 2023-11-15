@@ -99,6 +99,7 @@ public class UpdateSecurePassword {
                 "pwd_is_team_NO_1"))
         {
             execUpdateDbAllEmployeePwdToSecure(conn);
+            execUpdateDbAllEmployeePwdToSecure(conn);
         }
     }
 }
