@@ -98,7 +98,7 @@ public class UpdateSecurePassword {
                 "cs122b",
                 "pwd_is_team_NO_1"))
         {
-            execUpdateDbAllEmployeePwdToSecure(conn);
+            execUpdateDbAllCustomerPwdToSecure(conn);
             execUpdateDbAllEmployeePwdToSecure(conn);
         }
     }
