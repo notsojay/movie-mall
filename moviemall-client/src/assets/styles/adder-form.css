@@ -79,10 +79,10 @@
     mix-blend-mode: luminosity;
 }
 
-.adder-container button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-}
+/*.adder-container button:disabled {*/
+/*    background-color: #cccccc;*/
+/*    cursor: not-allowed;*/
+/*}*/
 
 .adder-container p {
     color: #28a745;
