@@ -2,7 +2,7 @@
 
 [🎥 **Click here to visit the MovieMall website**! 🎥](https://movie-mall.com:8443/#/)
 
-[👉 **Click here to watch the demo**! 👈](https://www.youtube.com/watch?v=eifzRutD8bc)
+[👉 **Click here to watch the demo**! 👈](https://www.youtube.com/watch?v=QotI8r10k1s)
 
 ## 📌 Table of Contents
 - [📖 Overview](#overview)
@@ -53,6 +53,24 @@ Our robust backend leverages Servlets to provide endpoints for extracting compre
 - **Data Adapters**: These are pivotal in molding database results into domain-specific entities and then crafting them into JSON.
 - **Utility Functions**: Classes like `URLUtils` augment functionality, especially in URL parameter handling.
 - **Exception Handling**: Our built-in ExceptionHandler guarantees consistent error responses, ensuring transparency with the client.
+
+### 🗂️ Performance Optimization Strategies
+This section details the optimization strategies implemented in our XML parsing project. A key highlight is the use of multi-threading, which is intricately designed to enhance processing speed and efficiency.
+
+#### 1. Multi-Threading Implementation
+- **Thread Pool and Executors**: We utilize `Executors.newFixedThreadPool(3)` to create a pool of threads, which allows for parallel processing of multiple XML files. This approach significantly reduces the time required for parsing large XML files as compared to a sequential approach.
+- **Concurrent HashMaps**: `ConcurrentHashMap` is used for `sharedStarMap` and `sharedMovieMap`, ensuring thread-safe operations while allowing concurrent reads and updates. This is crucial in a multi-threaded environment to prevent data corruption.
+- **CountDownLatch Mechanism**: The `CountDownLatch` is used to synchronize the completion of tasks. For instance, after parsing movies and stars in separate threads, a latch ensures both are completed before initiating the cast parsing. This ensures data consistency and integrity.
+
+#### 2. Efficient Data Structures
+- **Custom Data Structures**: Depending on the specific access patterns observed during parsing, such as more frequent reads than writes, custom data structures with read-write locks can be used to improve performance.
+- **Data Access Optimization**: By analyzing how data is accessed and modified in the maps, we can reduce contention and improve throughput. For instance, using temporary local structures to accumulate data before a single batch update to the shared map can minimize lock contention.
+
+#### 3. Batch Processing for Database Operations
+- **Batch Database Operations**: Instead of individual inserts or updates for each record, we implement batch operations. This approach reduces the number of network calls and database I/O operations, significantly decreasing the total execution time.
+- **Bulk Insertions**: Where possible, we leverage bulk insertion techniques provided by the database to handle large data sets more efficiently. This reduces the overhead associated with individual row insertions.
+
+
 
 ## 🎨 Frontend Details
 
