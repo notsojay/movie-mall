@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import java.sql.Connection;
 import java.sql.Types;
+import java.util.logging.Logger;
 
 import static com.adapter.StarAdapter.*;
 import static com.db.DatabaseManager.*;
@@ -17,6 +18,8 @@ import static com.utils.URLUtils.decodeFromBase64;
 
 @WebServlet("/StarDetailServlet")
 public class StarDetailServlet extends AbstractServletBase {
+
+    private static final Logger logger = Logger.getLogger(MovieListServlet.class.getName());
 
     private static final String SELECT_SQL_QUERY = """
             SELECT
@@ -77,6 +80,8 @@ public class StarDetailServlet extends AbstractServletBase {
                     new int[]{Types.VARCHAR, Types.INTEGER, Types.VARCHAR},
                     new boolean[]{false, false, true}
             );
+
+            logger.info("newStarID: " + newStarID + "\n");
 
             if (newStarID == null) {
                 super.sendStatusResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "ERROR: Adding star");
