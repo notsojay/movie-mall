@@ -4,7 +4,7 @@ import MovieDetail from './views/MovieDetail';
 import StarDetail from './views/StarDetail';
 import CustomerNavbar from './components/CustomerNavbar'
 import {HashRouter, Navigate, Outlet, Route, Routes, useLocation} from 'react-router-dom';
-import {AuthContext, AuthProvider} from "./context/AuthContext";
+import {AuthProvider} from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute"
 import React, {useContext, useEffect} from "react";
 import Home from "./views/Home";
