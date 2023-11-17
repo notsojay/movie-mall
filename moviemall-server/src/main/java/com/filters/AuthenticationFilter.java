@@ -22,6 +22,12 @@ public class AuthenticationFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         HttpSession session = httpRequest.getSession(false);
 
+        if (httpRequest.getScheme().equals("http")) {
+            String redirectURL = "https://movie-mall.com:8443" + httpRequest.getRequestURI();
+            httpResponse.sendRedirect(redirectURL);
+            return;
+        }
+
         String requestURI = httpRequest.getRequestURI();
         String contextPath = httpRequest.getContextPath();
         String homeURI = contextPath + "/";
