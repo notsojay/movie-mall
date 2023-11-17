@@ -85,7 +85,6 @@ public class UpdateSecurePassword {
 
         AtomicInteger count = new AtomicInteger();
         for (String updateQuery : updateQueryList) {
-            System.out.println(updateQuery);
             execDbUpdate(conn, updateQuery, count::addAndGet);
         }
         System.out.println("updating password completed, " + count + " rows affected");

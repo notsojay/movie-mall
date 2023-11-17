@@ -39,6 +39,7 @@ build/
 .idea/
 node_modules/
 /src/main/resources/db/
+/src/main/resources/db/xml_movies
 /scripts/
 .env
 /db/**

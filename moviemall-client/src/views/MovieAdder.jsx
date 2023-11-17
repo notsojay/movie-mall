@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {postData} from "../utils/apiCaller";
 import {SERVLET_ROUTE} from "../config/servletRoutes";
+import {useAuth} from "../hooks/useAuth";
 
 
 function MovieAdder() {
@@ -12,6 +13,7 @@ function MovieAdder() {
     const [genre, setGenre] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState(null);
+    const { isLoggedIn, showLoginModal, setShowLoginModal, isChecking } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -36,6 +38,11 @@ function MovieAdder() {
             setIsSubmitting(false);
         }
     };
+
+    if (!isLoggedIn) {
+        setShowLoginModal(true);
+        return null;
+    }
 
     return (
         <div className="adder-container">

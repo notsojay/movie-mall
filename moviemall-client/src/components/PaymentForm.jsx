@@ -73,6 +73,7 @@ function PaymentForm({ totalAmount, onClose }) {
                     <div className="form-group">
                         <label>First Name</label>
                         <input
+                            required
                             type="text"
                             value={creditCardInfo.firstName}
                             onChange={(e) => setCreditCardInfo({ ...creditCardInfo, firstName: e.target.value })}
@@ -81,6 +82,7 @@ function PaymentForm({ totalAmount, onClose }) {
                     <div className="form-group">
                         <label>Last Name</label>
                         <input
+                            required
                             type="text"
                             value={creditCardInfo.lastName}
                             onChange={(e) => setCreditCardInfo({ ...creditCardInfo, lastName: e.target.value })}
@@ -89,6 +91,7 @@ function PaymentForm({ totalAmount, onClose }) {
                     <div className="form-group">
                         <label>Card Number</label>
                         <input
+                            required
                             type="text"
                             value={creditCardInfo.cardNumber}
                             onChange={(e) => setCreditCardInfo({ ...creditCardInfo, cardNumber: e.target.value })}
@@ -97,6 +100,7 @@ function PaymentForm({ totalAmount, onClose }) {
                     <div className="form-group">
                         <label>Expiry Date (mm/dd/yyyy)</label>
                         <input
+                            required
                             type="text"
                             value={creditCardInfo.expiryDate}
                             onChange={(e) => setCreditCardInfo({ ...creditCardInfo, expiryDate: e.target.value })}

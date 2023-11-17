@@ -18,6 +18,7 @@ function EmployeeDashboard() {
     }, [isLoggedIn]);
 
     if (!isLoggedIn) {
+        setShowLoginModal(true);
         return null;
     }
 

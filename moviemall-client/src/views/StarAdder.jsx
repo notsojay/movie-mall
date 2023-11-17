@@ -2,12 +2,14 @@ import React, {useState} from "react";
 import {postData} from "../utils/apiCaller";
 import {SERVLET_ROUTE} from "../config/servletRoutes";
 import "../assets/styles/adder-form.css"
+import {useAuth} from "../hooks/useAuth";
 
 function StarAdder() {
     const [starName, setStarName] = useState('');
     const [birthYear, setBirthYear] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState(null);
+    const { isLoggedIn, showLoginModal, setShowLoginModal, isChecking } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -28,6 +30,11 @@ function StarAdder() {
             setIsSubmitting(false);
         }
     };
+
+    if (!isLoggedIn) {
+        setShowLoginModal(true);
+        return null;
+    }
 
     return (
         <div className="adder-container">
