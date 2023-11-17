@@ -1,0 +1,7 @@
+<urlrewrite>
+    <rule>
+        <from>^/dashboard$</from>
+        <to type="redirect">/#/dashboard</to>
+    </rule>
+    <!-- ... -->
+</urlrewrite>

@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useSearchParams} from 'react-router-dom';
 import {SERVLET_ROUTE} from "../config/servletRoutes";
-import axios from "axios";
 import {renderStarAsHeader} from '../utils/starRenderers';
 import {renderBasicProperty, renderMovieTitleAsLink} from '../utils/movieRenderers';
 import '../assets/styles/table.css';
