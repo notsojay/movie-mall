@@ -36,40 +36,41 @@ public class MovieListServlet extends AbstractServletBase {
     }
 
     private static final String SQL_QUERY_PREFIX = """
-            SELECT
-                m.id AS movie_id,
-                m.title,
-                m.year,
-                m.director,
-                subquery.rating,
-                m.price,
-                (
-                    SELECT GROUP_CONCAT(DISTINCT limited_genres.name ORDER BY limited_genres.name ASC)
-                    FROM (
-                        SELECT g.name
-                        FROM genres_in_movies gm
-                        LEFT JOIN genres g ON gm.genreId = g.id
-                        WHERE gm.movieId = m.id
-                        LIMIT 3
-                    ) AS limited_genres
-                ) AS genres,
-                (
-                    SELECT GROUP_CONCAT(DISTINCT CONCAT(limited_stars.name, '|', limited_stars.id) ORDER BY limited_stars.name ASC)
-                    FROM (
-                        SELECT s.name, s.id
-                        FROM stars_in_movies sm
-                        LEFT JOIN stars s ON sm.starId = s.id
-                        WHERE sm.movieId = m.id
-                        LIMIT 3
-                    ) AS limited_stars
-                ) AS star_name_id_pairs,
-                COUNT(*) OVER() AS total_records
-            FROM movies m
-            LEFT JOIN (
-                SELECT movieId, rating
-                FROM ratings
-            ) AS subquery ON m.id = subquery.movieId
-         """;
+               SELECT
+                   m.id AS movie_id,
+                   m.title,
+                   m.year,
+                   m.director,
+                   subquery.rating,
+                   m.price,
+                   (
+                       SELECT GROUP_CONCAT(DISTINCT limited_genres.name ORDER BY limited_genres.name ASC)
+                       FROM (
+                           SELECT g.name
+                           FROM genres_in_movies gm
+                           LEFT JOIN genres g ON gm.genreId = g.id
+                           WHERE gm.movieId = m.id
+                           LIMIT 3
+                       ) AS limited_genres
+                   ) AS genres,
+                   (
+                       SELECT GROUP_CONCAT(DISTINCT CONCAT(limited_stars.name, '|', limited_stars.id) ORDER BY limited_stars.name ASC)
+                       FROM (
+                           SELECT s.name, s.id
+                           FROM stars_in_movies sm
+                           LEFT JOIN stars s ON sm.starId = s.id
+                           WHERE sm.movieId = m.id
+                           LIMIT 3
+                       ) AS limited_stars
+                   ) AS star_name_id_pairs,
+                   COUNT(*) OVER() AS total_records
+               FROM movies m
+               LEFT JOIN (
+                   SELECT movieId, MAX(rating) as rating
+                   FROM ratings
+                   GROUP BY movieId
+               ) AS subquery ON m.id = subquery.movieId
+            """;
 
     private static final String SQL_QUERY_SUFFIX = " WHERE 1=1 ";
 
@@ -148,7 +149,7 @@ public class MovieListServlet extends AbstractServletBase {
                 25
         );
 
-        logger.info(request.getParameter("firstSortKey"));
+//        logger.info(request.getParameter("firstSortKey"));
         requestParams.firstSortKey = getStringFromRequestOrSessionOrDefault(
                 request.getParameter("firstSortKey"),
                 requestParams.firstSortKey,
@@ -177,7 +178,7 @@ public class MovieListServlet extends AbstractServletBase {
             session.setAttribute("userPreferences", requestParams);
         }
 
-        logger.info("\nfirstSortKey" + requestParams.firstSortKey + "\nfirstsortorder: " + requestParams.firstSortOrder + "\nsecondsortkey: " + requestParams.secondSortKey + " \n : " + requestParams.secondSortOrder);
+      //  logger.info("\nfirstSortKey" + requestParams.firstSortKey + "\nfirstsortorder: " + requestParams.firstSortOrder + "\nsecondsortkey: " + requestParams.secondSortKey + " \n : " + requestParams.secondSortOrder);
         return requestParams;
     }
 
@@ -204,8 +205,17 @@ public class MovieListServlet extends AbstractServletBase {
         finalQuery.append(SQL_QUERY_SUFFIX);
 
         if (title != null && !title.isEmpty()) {
-            finalQuery.append(" AND m.title LIKE ? ");
-            queryParams.add("%" + title + "%");
+            String[] words = title.split("\\s+");
+            finalQuery.append(" AND (");
+            for (int i = 0; i < words.length; i++) {
+                finalQuery.append("m.title LIKE ?");
+                queryParams.add("%" + words[i] + "%");
+
+                if (i < words.length - 1) {
+                    finalQuery.append(" AND ");
+                }
+            }
+            finalQuery.append(") ");
         }
 
         if (year != null && !year.isEmpty()) {
@@ -347,7 +357,7 @@ public class MovieListServlet extends AbstractServletBase {
                     + (secondOrder != null ? secondOrder.toUpperCase() : "ASC");
         }
 
-        logger.info('\n' + orderByClause + '\n');
+       // logger.info('\n' + orderByClause + '\n');
         query.append(orderByClause);
     }
 

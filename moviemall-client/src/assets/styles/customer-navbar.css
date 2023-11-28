@@ -11,14 +11,16 @@
     position: relative;
     z-index: 100;
     font-family: 'OpenSans wght';
-    overflow-x: auto;
     backdrop-filter: blur(1px);
+    overflow: visible;
 }
 
 .navbar-section {
     display: flex;
     justify-content: center;
     align-items: center;
+    min-height: 40px;
+    flex: 0 1 auto;
 }
 
 .navbar-left {
@@ -56,20 +58,69 @@
     mix-blend-mode: luminosity;
 }
 
+.navbar-section .navbar-center {
+    display: flex;
+    align-items: center; /* This will align the items vertically */
+}
+
 .search-bar {
     padding: 0.35rem;
     border: 2px solid #ecf0f1;
-    border-radius: 40px;
     outline: none;
     transition: border-color 0.3s ease;
     /*margin: 0 1em;*/
-    flex-grow: 0.5;
     display: flex;
     align-items: center;
     margin-left: auto;
     margin-right: auto;
     backdrop-filter: blur(25px);
     box-shadow: 0 0 4px rgba(235, 235, 235, 0.5);
+    justify-content: space-between;
+    position: relative;
+    flex-grow: 0.5;
+    flex-shrink: 0;
+    gap: 10px;
+}
+
+.search-bar .year {
+    flex-basis: 80px;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.search-bar input[name="director"] {
+    flex-basis: 200px;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.search-bar input[name="starName"] {
+    flex: 1;
+}
+
+.search-bar .react-autosuggest__input {
+    width: 300px;
+}
+
+.suggestions-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.suggestion-item {
+    color: black;
+    font-family: Helvetica;
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
 }
 
 .search-bar .transparent-custom-button {
@@ -82,23 +133,31 @@
     margin-right: 5px;
     background-color: hsla(0, 0%, 99%, 0.15);
     color: white;
-    border-radius: 30px;
-    flex: 1;
     min-width: 0;
     font-size: 1rem;
-    width: 7.5rem;
 }
 
-.search-bar input::placeholder {
+.search-bar input::placeholder, .search-input {
     font-weight: bold;
     opacity: 0.8;
     color: white;
     font-size: 1rem;
 }
 
-.search-bar:focus {
+.search-bar:focus, .search-input:focus {
     border-color: #2c3e50;
 }
+
+.suggestions-container .suggestion-item--focused {
+    background-color: blue;
+    color: #333;
+}
+
+.suggestion-item:hover, .react-autosuggest__suggestion--highlighted {
+    background-color: #f2f2f2;
+    color: #333;
+}
+
 
 /*@media (max-width: 700px) {*/
 /*    .navbar {*/

@@ -14,6 +14,7 @@ function useLogout() {
                 }
             });
             if (response.status === 200) {
+                sessionStorage.clear();
                 setIsLoggedIn(false);
             } else {
                 console.error('Failed to log out:', response.data.message);

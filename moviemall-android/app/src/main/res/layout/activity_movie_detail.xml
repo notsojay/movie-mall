@@ -1,0 +1,59 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="#F5F5F5">
+
+        <TextView
+            android:id="@+id/movie_title"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:gravity="center"
+            android:background="#E8EAF6"
+            android:padding="16dp"/>
+
+        <TextView
+            android:id="@+id/movie_director"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:textSize="22sp"
+            android:textColor="#333333"
+            android:gravity="center"
+            android:background="#C5CAE9"
+            android:padding="16dp"/>
+
+        <TextView
+            android:id="@+id/movie_genres"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:textSize="20sp"
+            android:textColor="#333333"
+            android:gravity="center"
+            android:background="#C5CAE9"
+            android:padding="16dp"/>
+
+        <TextView
+            android:id="@+id/movie_stars"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:textSize="20sp"
+            android:textColor="#333333"
+            android:gravity="center"
+            android:background="#C5CAE9"
+            android:padding="16dp"/>
+
+    </LinearLayout>
+</ScrollView>

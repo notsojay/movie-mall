@@ -1,5 +1,4 @@
 const BASE_URL = '/server'
-// const BASE_URL = '/moviemall-server';
 
 export const SERVLET_ROUTE = {
     AUTHENTICATION: `${BASE_URL}/AuthenticationServlet`,
@@ -8,5 +7,6 @@ export const SERVLET_ROUTE = {
     STAR_DETAIL: `${BASE_URL}/StarDetailServlet`,
     SHOPPING_CART: `${BASE_URL}/ShoppingCartServlet`,
     ORDER: `${BASE_URL}/OrderServlet`,
-    EMPLOYEE: `${BASE_URL}/EmployeeServlet`
+    EMPLOYEE: `${BASE_URL}/EmployeeServlet`,
+    AUTOCOMPLETE: `${BASE_URL}/AutocompleteServlet`
 };

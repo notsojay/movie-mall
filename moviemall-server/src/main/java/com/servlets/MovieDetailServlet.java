@@ -49,6 +49,7 @@ public class MovieDetailServlet extends AbstractServletBase {
                        SELECT r.rating
                        FROM ratings r
                        WHERE r.movieId = m.id
+                       LIMIT 1
                    ) AS rating
             FROM movies m
             WHERE m.id = ?;

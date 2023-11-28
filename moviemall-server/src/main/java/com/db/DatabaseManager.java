@@ -11,10 +11,11 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.logging.Logger;
 
 public class DatabaseManager {
 
-    //private static final Logger logger = Logger.getLogger(MovieListServlet.class.getName());
+//    private static final Logger logger = Logger.getLogger(DatabaseManager.class.getName());
 
     private DatabaseManager() {
         // Prevent Instantiation
@@ -39,8 +40,6 @@ public class DatabaseManager {
         if (sql == null || sql.trim().isEmpty()) {
             throw new IllegalArgumentException("Error: SQL query is null or empty");
         }
-
-        //logger.info(sql);
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             for (int i = 0; i < params.length; ++i) {

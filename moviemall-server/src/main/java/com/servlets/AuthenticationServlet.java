@@ -70,9 +70,10 @@ public class AuthenticationServlet extends AbstractServletBase {
             String userType = credentials.getUserType();
             String email = credentials.getEmail();
             String password = credentials.getPassword();
+            boolean useRECAPTCHA = credentials.isUseRECAPTCHA();
             String captchaValue = credentials.getCaptchaValue();
 
-            AuthResult authResult = authenticate(request, userType, email, password, captchaValue);
+            AuthResult authResult = authenticate(request, userType, email, password, captchaValue, useRECAPTCHA);
 
             JSONObject jsonResponse = switch (authResult) {
                 case SUCCESS -> convertAuthResponseToJson("success", "Logged in successfully");
@@ -105,10 +106,10 @@ public class AuthenticationServlet extends AbstractServletBase {
         }
     }
 
-    private AuthResult authenticate(HttpServletRequest request, String userType, String email, String password, String captchaValue) throws Exception {
+    private AuthResult authenticate(HttpServletRequest request, String userType, String email, String password, String captchaValue, boolean useRECAPTCHA) throws Exception {
         try (Connection conn = getJNDIDatabaseConnection()) {
 
-            if (!verifyRecaptcha(captchaValue)) {
+            if (!verifyRecaptcha(captchaValue) && useRECAPTCHA) {
                 return AuthResult.RECAPTCHA_FAILED;
             }
             if (email == null || password == null) {

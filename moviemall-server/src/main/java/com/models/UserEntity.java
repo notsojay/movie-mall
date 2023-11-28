@@ -8,6 +8,7 @@ public class UserEntity {
     String cardNumber = null;
     String cardExpiryDate = null;
     String captchaValue = null;
+    Boolean useRECAPTCHA = true;
     String address = null;
     String email = null;
     String password = null;
@@ -90,5 +91,13 @@ public class UserEntity {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public Boolean isUseRECAPTCHA() {
+        return useRECAPTCHA;
+    }
+
+    public void setUseRECAPTCHA(Boolean useRECAPTCHA) {
+        this.useRECAPTCHA = useRECAPTCHA;
     }
 }
