@@ -2,7 +2,7 @@
 
 [🎥 **Click here to visit the MovieMall website**! 🎥](https://movie-mall.com:8443/#/)
 
-[👉 **Click here to watch the demo**! 👈](https://www.youtube.com/watch?v=QotI8r10k1s)
+[👉 **Click here to watch the demo**! 👈](https://www.youtube.com/watch?v=ztUwsBEetuE)
 
 ## 📌 Table of Contents
 - [📖 Overview](#overview)
