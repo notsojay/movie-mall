@@ -28,8 +28,9 @@ public class LoginActivity extends AppCompatActivity {
     private TextView message;
     private TextView errorMessage;
 
-    //private final String LOGIN_BASE_URL  = "https://movie-mall.com:8443/server/AuthenticationServlet";
-    private final String LOGIN_BASE_URL = "https://10.0.2.2:8443/server/AuthenticationServlet";
+    private final String LOGIN_BASE_URL  = "https://movie-mall.com:8443/server/AuthenticationServlet";
+
+    //private final String LOGIN_BASE_URL = "https://10.0.2.2:8443/server/AuthenticationServlet";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

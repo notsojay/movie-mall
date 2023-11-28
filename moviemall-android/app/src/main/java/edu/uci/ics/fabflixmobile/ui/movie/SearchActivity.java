@@ -18,8 +18,10 @@ import edu.uci.ics.fabflixmobile.databinding.ActivitySearchBinding;
 public class SearchActivity extends AppCompatActivity {
     private EditText searchField;
     private Button searchButton;
-    //private final String MOVIE_LIST_BASE_URL = "https://movie-mall.com:8443/server/MovieListServlet";
-    private final String MOVIE_LIST_BASE_URL = "https://10.0.2.2:8443/server/MovieListServlet";
+    private final String MOVIE_LIST_BASE_URL = "https://movie-mall.com:8443/server/MovieListServlet";
+
+//  private final String MOVIE_LIST_BASE_URL = "https://10.0.2.2:8443/server/MovieListServlet";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

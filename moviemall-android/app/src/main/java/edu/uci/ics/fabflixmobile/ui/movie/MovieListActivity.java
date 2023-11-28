@@ -28,9 +28,11 @@ import edu.uci.ics.fabflixmobile.data.model.Movie;
 import edu.uci.ics.fabflixmobile.databinding.ActivityMovielistBinding;
 
 public class MovieListActivity extends AppCompatActivity {
+    private final String MOVIE_DETAIL_BASE_URL = "https://movie-mall.com:8443/server/MovieDetailServlet";
+    private final String MOVIE_LIST_BASE_URL = "https://movie-mall.com:8443/server/MovieListServlet";
 
-    private final String MOVIE_DETAIL_BASE_URL = "https://10.0.2.2:8443/server/MovieDetailServlet";
-    private final String MOVIE_LIST_BASE_URL = "https://10.0.2.2:8443/server/MovieListServlet";
+    //private final String MOVIE_DETAIL_BASE_URL = "https://10.0.2.2:8443/server/MovieDetailServlet";
+    //private final String MOVIE_LIST_BASE_URL = "https://10.0.2.2:8443/server/MovieListServlet";
     private ArrayList<Movie> movies;
     private MovieListViewAdapter adapter;
     private int currentPage = 1;
