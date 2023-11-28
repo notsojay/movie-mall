@@ -23,10 +23,9 @@ public class AutocompleteServlet extends AbstractServletBase {
     private static final Logger logger = Logger.getLogger(MovieListServlet.class.getName());
 
     private static final String SQL_QUERY = """
-                SELECT m.title AS title, MIN(m.id) AS movie_id
+                SELECT m.title AS title, m.id AS movie_id, m.year AS year
                 FROM movies m
                 WHERE m.title LIKE ?
-                GROUP BY m.title
                 ORDER BY LOCATE(?, m.title), m.title
                 LIMIT 10
             """;
@@ -50,9 +49,11 @@ public class AutocompleteServlet extends AbstractServletBase {
                             JSONObject jsonObject = new JSONObject();
                             String title = rs.getString("title");
                             String movieId = rs.getString("movie_id");
+                            Integer year = rs.getInt("year");
                             movieId = encodeToBase64(movieId);
                             jsonObject.put("title", title);
                             jsonObject.put("id", movieId);
+                            jsonObject.put("year", year);
                             suggestions.put(jsonObject);
                         }
                         return suggestions;

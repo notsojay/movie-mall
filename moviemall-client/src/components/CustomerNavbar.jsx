@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import Autosuggest from 'react-autosuggest';
 import useLogout from '../hooks/useLogout';
@@ -29,24 +29,27 @@ function CustomerNavbar() {
         clearTimeout(timeoutId);
         if (inputValue.length >= 3) {
             timeoutId = setTimeout(async () => {
+                console.log('Autocomplete search initiated for:', inputValue); // 日志：自动完成搜索启动
                 const cachedSuggestions = sessionStorage.getItem(inputValue);
                 if (cachedSuggestions) {
+                    console.log('Using cached suggestions for:', inputValue); // 日志：使用缓存结果
                     const parsedSuggestions = JSON.parse(cachedSuggestions);
                     if (Array.isArray(parsedSuggestions)) {
                         setSuggestions(parsedSuggestions);
+                        console.log('Suggestions set from cache:', parsedSuggestions); // 日志：使用的建议列表（缓存）
                     } else {
                         console.error('Cached suggestions is not an array');
                         setSuggestions([]);
                     }
                 } else {
                     try {
+                        console.log('Fetching suggestions from server for:', inputValue); // 日志：向服务器发送请求
                         const response = await fetchData(SERVLET_ROUTE.AUTOCOMPLETE, {query: inputValue}, false, 'Error fetching suggestions');
-
                         if (response.status === 200) {
                             let suggestions = await response.data;
                             setSuggestions(suggestions);
                             sessionStorage.setItem(inputValue, JSON.stringify(suggestions));
-                            console.log(suggestions)
+                            console.log('Suggestions set from server response:', suggestions); // 日志：使用的建议列表（服务器响应）
                         } else {
                             throw new Error('Network response was not ok');
                         }
@@ -73,6 +76,7 @@ function CustomerNavbar() {
             className={`suggestion-item ${isHighlighted ? 'react-autosuggest__suggestion--highlighted' : ''}`}
         >
             {suggestion.title}
+            <span> (Release Year: {suggestion.year ?? 'N/A'}) </span>
         </div>
     );
 
