@@ -1,7 +1,7 @@
 package com.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.models.DatabaseColumnMetadata;
+import com.models.DbColumnMetadata;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,19 +27,19 @@ public class EmployeeServlet extends AbstractServletBase{
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        try (Connection conn = getJNDIDatabaseConnection()) {
+        try (Connection conn = getJNDIDatabaseConnection(true)) {
 
-            Map<String, List<DatabaseColumnMetadata>> finalResult = execDbQuery(
+            Map<String, List<DbColumnMetadata>> finalResult = execDbQuery(
                     conn,
                     SELECT_METADATA_QUERY,
                     rs -> {
-                        Map<String, List<DatabaseColumnMetadata>> tableCols = new HashMap<>();
+                        Map<String, List<DbColumnMetadata>> tableCols = new HashMap<>();
                         while (rs.next()) {
                             String tableName = rs.getString("TABLE_NAME");
                             String columnName = rs.getString("COLUMN_NAME");
                             String dataType = rs.getString("DATA_TYPE");
 
-                            DatabaseColumnMetadata colDetails = new DatabaseColumnMetadata(columnName, dataType);
+                            DbColumnMetadata colDetails = new DbColumnMetadata(columnName, dataType);
                             tableCols.computeIfAbsent(tableName, k -> new ArrayList<>()).add(colDetails);
                         }
                         return tableCols;

@@ -27,9 +27,20 @@ public class DatabaseManager {
         return conn;
     }
 
-    public static Connection getJNDIDatabaseConnection() throws NamingException, SQLException {
+//    public static Connection getJNDIDatabaseConnection() throws NamingException, SQLException {
+//        Context ctx = new InitialContext();
+//        DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/moviedb");
+//        return ds.getConnection();
+//    }
+
+    public static Connection getJNDIDatabaseConnection(boolean isReadOperation) throws NamingException, SQLException {
         Context ctx = new InitialContext();
-        DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/moviedb");
+        DataSource ds;
+        if (isReadOperation) {
+            ds = (DataSource) ctx.lookup("java:comp/env/jdbc/moviedbSlave");
+        } else {
+            ds = (DataSource) ctx.lookup("java:comp/env/jdbc/moviedbMaster");
+        }
         return ds.getConnection();
     }
 

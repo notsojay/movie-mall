@@ -1,10 +1,10 @@
 package com.models;
 
-public class DatabaseColumnMetadata {
+public class DbColumnMetadata {
     private String columnName;
     private String dataType;
 
-    public DatabaseColumnMetadata(String columnName, String dataType) {
+    public DbColumnMetadata(String columnName, String dataType) {
         this.columnName = columnName;
         this.dataType = dataType;
     }

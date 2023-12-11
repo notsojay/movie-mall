@@ -57,7 +57,7 @@ public class MovieDetailServlet extends AbstractServletBase {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        try (Connection conn = getJNDIDatabaseConnection()) {
+        try (Connection conn = getJNDIDatabaseConnection(true)) {
 
             String movie_id = request.getParameter("query");
             if (movie_id == null) {
@@ -86,7 +86,7 @@ public class MovieDetailServlet extends AbstractServletBase {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        try (Connection conn = getJNDIDatabaseConnection()) {
+        try (Connection conn = getJNDIDatabaseConnection(false)) {
             ObjectMapper objectMapper = new ObjectMapper();
             MovieEntity movie = objectMapper.readValue(request.getReader(), MovieEntity.class);
             String movieTitle = movie.getTitle();

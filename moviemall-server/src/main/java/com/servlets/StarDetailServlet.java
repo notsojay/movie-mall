@@ -37,7 +37,7 @@ public class StarDetailServlet extends AbstractServletBase {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        try (Connection conn = getJNDIDatabaseConnection()) {
+        try (Connection conn = getJNDIDatabaseConnection(true)) {
 
             String star_id = request.getParameter("query");
             if (star_id == null) {
@@ -66,7 +66,7 @@ public class StarDetailServlet extends AbstractServletBase {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        try (Connection conn = getJNDIDatabaseConnection()) {
+        try (Connection conn = getJNDIDatabaseConnection(false)) {
             ObjectMapper objectMapper = new ObjectMapper();
             StarEntity star = objectMapper.readValue(request.getReader(), StarEntity.class);
             String starName = star.getStarName();

@@ -107,7 +107,7 @@ public class AuthenticationServlet extends AbstractServletBase {
     }
 
     private AuthResult authenticate(HttpServletRequest request, String userType, String email, String password, String captchaValue, boolean useRECAPTCHA) throws Exception {
-        try (Connection conn = getJNDIDatabaseConnection()) {
+        try (Connection conn = getJNDIDatabaseConnection(true)) {
 
             if (!verifyRecaptcha(captchaValue) && useRECAPTCHA) {
                 return AuthResult.RECAPTCHA_FAILED;

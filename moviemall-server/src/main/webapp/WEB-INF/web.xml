@@ -10,6 +10,20 @@
   </welcome-file-list>
 
   <resource-ref>
+    <description>Master DB Connection</description>
+    <res-ref-name>jdbc/moviedbMaster</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+
+  <resource-ref>
+    <description>Slave DB Connection</description>
+    <res-ref-name>jdbc/moviedbSlave</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+
+  <resource-ref>
     <description>DB Connection</description>
     <res-ref-name>jdbc/moviedb</res-ref-name>
     <res-type>javax.sql.DataSource</res-type>

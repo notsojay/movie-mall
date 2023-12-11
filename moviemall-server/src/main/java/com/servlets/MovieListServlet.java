@@ -76,7 +76,7 @@ public class MovieListServlet extends AbstractServletBase {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        try (Connection conn = getJNDIDatabaseConnection()) {
+        try (Connection conn = getJNDIDatabaseConnection(true)) {
 
             RequestParameters requestParams = getRequestParameters(request);
             StringBuilder finalQuery = new StringBuilder();

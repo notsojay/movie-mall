@@ -43,7 +43,7 @@ public class OrderServlet extends AbstractServletBase {
             """;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        try (Connection conn = getJNDIDatabaseConnection()) {
+        try (Connection conn = getJNDIDatabaseConnection(false)) {
 
             ObjectMapper objectMapper = new ObjectMapper();
             UserEntity customer = objectMapper.readValue(request.getReader(), UserEntity.class);

@@ -39,7 +39,7 @@ public class AutocompleteServlet extends AbstractServletBase {
             return;
         }
 
-        try (Connection conn = getJNDIDatabaseConnection()) {
+        try (Connection conn = getJNDIDatabaseConnection(true)) {
             JSONArray finalResult = execDbQuery(
                     conn,
                     SQL_QUERY,
