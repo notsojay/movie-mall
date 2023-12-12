@@ -1,34 +1,144 @@
 # 🎬 MovieMall Web Application
 
 - # General
-    - #### Team#:
+    - #### Team#: team-no1
     
-    - #### Names:
+    - #### Names: Jiahao Liang, Xiaohua Zhang
     
-    - #### Project 5 Video Demo Link:
+    - #### Project 5 Video Demo Link: [👉 **Click here to watch the demo**! 👈](https://www.youtube.com/watch?v=R0JvKTR3c38)
 
-    - #### Instruction of deployment:
+    - #### Instruction of deployment: Detailed steps on how to deploy the MovieMall web application.
 
-    - #### Collaborations and Work Distribution:
+    - #### Collaborations and Work Distribution: Breakdown of tasks and responsibilities among team members
 
 
 - # Connection Pooling
     - #### Include the filename/path of all code/configuration files in GitHub of using JDBC Connection Pooling.
-    
+        - /var/lib/tomcat10/conf/server.xml - Contains DataSource configuration:
+          
+            ````
+              <Resource name="jdbc/moviedbMaster"
+                        auth="Container"
+                        type="javax.sql.DataSource"
+                        factory="org.apache.tomcat.dbcp.dbcp2.BasicDataSourceFactory"
+                        driverClassName="com.mysql.cj.jdbc.Driver"
+            	    url="jdbc:mysql://172.31.26.229:3306/moviedb?cachePrepStmts=true&amp;prepStmtCacheSize=250&amp;prepStmtCacheSqlLimit=2048"
+                        username="repl"
+                        password="slave66Pass$word"
+                        maxTotal="100"
+                        maxIdle="30"
+                        maxWaitMillis="10000"/>
+            
+              <Resource name="jdbc/moviedbSlave"
+                        auth="Container"
+                        type="javax.sql.DataSource"
+                        factory="org.apache.tomcat.dbcp.dbcp2.BasicDataSourceFactory"
+                        driverClassName="com.mysql.cj.jdbc.Driver"
+               	    url="jdbc:mysql://172.31.38.149:3306/moviedb?cachePrepStmts=true&amp;prepStmtCacheSize=250&amp;prepStmtCacheSqlLimit=2048"
+                        username="readonly_user"
+                        password="readonly_password"
+                        maxTotal="100"
+                        maxIdle="30"
+                        maxWaitMillis="10000"/>
+            ````
+
     - #### Explain how Connection Pooling is utilized in the Fabflix code.
+        - /var/lib/tomcat10/conf/context.xml - Defines the connection pool settings.
+
+            ````
+            <ResourceLink name="jdbc/moviedbMaster"
+                          global="jdbc/moviedbMaster"
+                          type="javax.sql.DataSource"/>
+            
+            <ResourceLink name="jdbc/moviedbSlave"
+                          global="jdbc/moviedbSlave"
+                          type="javax.sql.DataSource"/>
+            ````
+
+  
     
     - #### Explain how Connection Pooling works with two backend SQL.
+        - The application uses two SQL backends, set up as master and slave. The connection pooling is configured to interact with both the master and the slave databases. This setup enhances performance and provides fault tolerance. Read operations are routed to the slave database, while write operations go to the master database.
     
 
 - # Master/Slave
     - #### Include the filename/path of all code/configuration files in GitHub of routing queries to Master/Slave SQL.
+        - /etc/apache2/sites-enabled/000-default.conf - Apache configuration for load balancing：
+          
+            ````
+            Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/" env=BALANCER_ROUTE_CHANGED
+            
+            <VirtualHost *:80>
+                ServerName movie-mall.com
+            
+                #SSLEngine on
+                #SSLCertificateFile "/var/lib/tomcat10/0000_cert.pem"
+                #SSLCertificateKeyFile "/var/lib/tomcat10/privatekey.pem"
+                #SSLCertificateChainFile "/var/lib/tomcat10/0001_chain.pem"
+            
+                <Proxy "balancer://Session_balancer">
+                    BalancerMember "http://172.31.26.229:8080/server" route=j1
+                    BalancerMember "http://172.31.38.149:8080/server" route=j2
+                    ProxySet stickysession=ROUTEID
+                </Proxy>
+            
+                <Proxy "balancer://mycluster">
+                    BalancerMember "http://172.31.26.229:8080" route=r1
+                    BalancerMember "http://172.31.38.149:8080" route=r2
+                    ProxySet stickysession=ROUTEID
+                </Proxy>
+            
+                ProxyRequests Off
+                ProxyPreserveHost On
+                ProxyVia Full
+                <Proxy *>
+                    Require all granted
+                </Proxy>
+            
+                ProxyPass /server balancer://Session_balancer
+                ProxyPassReverse /server balancer://Session_balancer
+                ProxyPass / balancer://mycluster/
+                ProxyPassReverse / balancer://mycluster/
+            
+                ErrorLog ${APACHE_LOG_DIR}/error.log
+                CustomLog ${APACHE_LOG_DIR}/access.log combined
+            </VirtualHost>
+            ````
 
+        - [moviemall-server/src/main/java/com/db/DatabaseManager.java](moviemall-server/src/main/java/com/db/DatabaseManager.java) - Contains logic for routing queries.
+      
     - #### How read/write requests were routed to Master/Slave SQL?
+        - Read requests are routed to the slave SQL through the Apache load balancer configured with sticky sessions.
+        - This is achieved by the ProxyPass directives in Apache's configuration, which direct traffic to the appropriate backend based on the route identifier.
+        - Write requests are directed to the master SQL server.
+        - In the application code, the getJNDIDatabaseConnection method checks if the operation is a read or write and accordingly returns a connection to either the master or the slave database.  
     
 
 - # JMeter TS/TJ Time Logs
-    - #### Instructions of how to use the `log_processing.*` script to process the JMeter logs.
+    - The `log_processing.py` script is designed to process JMeter logs to calculate average Servlet Time (TS) and JDBC Time (TJ). Follow these steps to use the script:
 
+    - ### Prerequisites
+        - Ensure Python is installed on your system.
+        - The script requires a log file generated by JMeter as input.
+
+    - ### Steps to Run the Script
+        1. **Locate the Log File**: Identify the JMeter log file that you want to process. This file should contain entries with Servlet and JDBC times.
+        2. **Run the Script**: Open your terminal or command prompt, navigate to the directory containing the `log_processing.py` script, and run the following command:
+
+        ```bash
+        python log_processing.py path_to_your_log_file.log
+        ```
+
+        3. Replace `path_to_your_log_file.log` with the actual path to your JMeter log file.
+
+        4. **View the Results**: After running the script, it will output the average Servlet Time (TS) and JDBC Time (TJ) in nanoseconds. Look for lines that say "Average Servlet Time (TS): ..." and "Average JDBC Time (TJ): ..." in the output.
+
+    - ### Example
+        - If your JMeter log file is located at `/path/to/jmeter/logs/test_results.log`, run the script like this:
+          
+            ```bash
+            python log_processing.py /path/to/jmeter/logs/test_results.log
+      
 
 - # JMeter TS/TJ Time Measurement Report
 
@@ -49,7 +159,6 @@
 [🎥 **Click here to visit the MovieMall website**! 🎥](https://movie-mall.com:8443/#/)
 [🎥 **Click here to visit the MovieMall website**! 🎥](http://movie-mall.com:80/#/)
 
-[👉 **Click here to watch the demo**! 👈](https://www.youtube.com/watch?v=R0JvKTR3c38)
 
 ## 📌 Table of Contents
 - [📖 Overview](#overview)
