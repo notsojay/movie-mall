@@ -37,7 +37,7 @@ def calculate_average_times(log_file_path):
         print("No valid JDBC time entries found.")
 
 
-if __name__ == "__main__":£
+if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python script.py path_to_log_file")
     else:
