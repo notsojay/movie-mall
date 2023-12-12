@@ -27,21 +27,15 @@ public class DatabaseManager {
         return conn;
     }
 
-//    public static Connection getJNDIDatabaseConnection() throws NamingException, SQLException {
-//        Context ctx = new InitialContext();
-//        DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/moviedb");
-//        return ds.getConnection();
-//    }
-
     public static Connection getJNDIDatabaseConnection(boolean isReadOperation) throws NamingException, SQLException {
         Context ctx = new InitialContext();
         DataSource ds;
 
-        ds = (DataSource) ctx.lookup("java:comp/env/jdbc/moviedb");
+        //ds = (DataSource) ctx.lookup("java:comp/env/jdbc/moviedb");
 
-//        ds = isReadOperation ?
-//                (DataSource) ctx.lookup("java:comp/env/jdbc/moviedbSlave") :
-//                (DataSource) ctx.lookup("java:comp/env/jdbc/moviedbMaster");
+        ds = isReadOperation ?
+                (DataSource) ctx.lookup("java:comp/env/jdbc/moviedbSlave") :
+                (DataSource) ctx.lookup("java:comp/env/jdbc/moviedbMaster");
 
         return ds.getConnection();
     }
