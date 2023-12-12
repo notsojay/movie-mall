@@ -2,6 +2,7 @@ package com.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.models.DbColumnMetadata;
+import com.utils.LogUtil;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,12 +13,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import static com.db.DatabaseManager.execDbQuery;
 import static com.db.DatabaseManager.getJNDIDatabaseConnection;
 
 @WebServlet("/EmployeeServlet")
-public class EmployeeServlet extends AbstractServletBase{
+public class EmployeeServlet extends AbstractServletBase {
+
+    private final Logger performanceLogger = LogUtil.getLogger();
+
     private static final String SELECT_METADATA_QUERY = """
             SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE
             FROM INFORMATION_SCHEMA.COLUMNS
@@ -29,6 +34,10 @@ public class EmployeeServlet extends AbstractServletBase{
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try (Connection conn = getJNDIDatabaseConnection(true)) {
 
+            String requestUri = request.getRequestURI();
+            String httpMethod = request.getMethod();
+
+            long startJdbcTime = System.nanoTime();
             Map<String, List<DbColumnMetadata>> finalResult = execDbQuery(
                     conn,
                     SELECT_METADATA_QUERY,
@@ -45,6 +54,9 @@ public class EmployeeServlet extends AbstractServletBase{
                         return tableCols;
                     }
             );
+            long endJdbcTime = System.nanoTime();
+            long jdbcTime = endJdbcTime - startJdbcTime;
+            performanceLogger.info(httpMethod + " " + requestUri + " - JDBC Time: " + jdbcTime + "ns");
 
             ObjectMapper objectMapper = new ObjectMapper();
             String jsonResult = objectMapper.writeValueAsString(finalResult);

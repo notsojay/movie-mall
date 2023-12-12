@@ -36,11 +36,13 @@ public class DatabaseManager {
     public static Connection getJNDIDatabaseConnection(boolean isReadOperation) throws NamingException, SQLException {
         Context ctx = new InitialContext();
         DataSource ds;
-        if (isReadOperation) {
-            ds = (DataSource) ctx.lookup("java:comp/env/jdbc/moviedbSlave");
-        } else {
-            ds = (DataSource) ctx.lookup("java:comp/env/jdbc/moviedbMaster");
-        }
+
+        ds = (DataSource) ctx.lookup("java:comp/env/jdbc/moviedb");
+
+//        ds = isReadOperation ?
+//                (DataSource) ctx.lookup("java:comp/env/jdbc/moviedbSlave") :
+//                (DataSource) ctx.lookup("java:comp/env/jdbc/moviedbMaster");
+
         return ds.getConnection();
     }
 

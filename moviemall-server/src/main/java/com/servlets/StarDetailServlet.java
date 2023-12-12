@@ -2,6 +2,7 @@ package com.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.models.StarEntity;
+import com.utils.LogUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +19,7 @@ import static com.utils.URLUtils.decodeFromBase64;
 
 @WebServlet("/StarDetailServlet")
 public class StarDetailServlet extends AbstractServletBase {
-
+    private final Logger performanceLogger = LogUtil.getLogger();
     private static final Logger logger = Logger.getLogger(MovieListServlet.class.getName());
 
     private static final String SELECT_SQL_QUERY = """
@@ -39,12 +40,15 @@ public class StarDetailServlet extends AbstractServletBase {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try (Connection conn = getJNDIDatabaseConnection(true)) {
 
+            String requestUri = request.getRequestURI();
+            String httpMethod = request.getMethod();
             String star_id = request.getParameter("query");
             if (star_id == null) {
                 throw new ServletException("ERROR: Invalid URL");
             }
             star_id = decodeFromBase64(star_id);
 
+            long startJdbcTime = System.nanoTime();
             JSONObject finalResult = execDbQuery(
                     conn,
                     SELECT_SQL_QUERY,
@@ -55,6 +59,9 @@ public class StarDetailServlet extends AbstractServletBase {
                     },
                     star_id
             );
+            long endJdbcTime = System.nanoTime();
+            long jdbcTime = endJdbcTime - startJdbcTime;
+            performanceLogger.info(httpMethod + " " + requestUri + " - JDBC Time: " + jdbcTime + "ns");
 
             if (finalResult == null) throw new ServletException("ERROR: Star not found");
             super.sendJsonDataResponse(response, HttpServletResponse.SC_OK, finalResult);
@@ -67,11 +74,14 @@ public class StarDetailServlet extends AbstractServletBase {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         try (Connection conn = getJNDIDatabaseConnection(false)) {
+            String requestUri = request.getRequestURI();
+            String httpMethod = request.getMethod();
             ObjectMapper objectMapper = new ObjectMapper();
             StarEntity star = objectMapper.readValue(request.getReader(), StarEntity.class);
             String starName = star.getStarName();
             Integer starBirthYear = star.getStarBirthYear();
 
+            long startJdbcTime = System.nanoTime();
             String newStarID = execDbProcedure(
                     conn,
                     "{CALL add_star(?, ?, ?)}",
@@ -80,8 +90,9 @@ public class StarDetailServlet extends AbstractServletBase {
                     new int[]{Types.VARCHAR, Types.INTEGER, Types.VARCHAR},
                     new boolean[]{false, false, true}
             );
-
-            logger.info("newStarID: " + newStarID + "\n");
+            long endJdbcTime = System.nanoTime();
+            long jdbcTime = endJdbcTime - startJdbcTime;
+            performanceLogger.info(httpMethod + " " + requestUri + " - JDBC Time: " + jdbcTime + "ns");
 
             if (newStarID == null) {
                 super.sendStatusResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "ERROR: Adding star");

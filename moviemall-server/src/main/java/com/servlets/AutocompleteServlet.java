@@ -1,5 +1,6 @@
 package com.servlets;
 
+import com.utils.LogUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +21,8 @@ import static com.utils.URLUtils.encodeToBase64;
 @WebServlet("/AutocompleteServlet")
 public class AutocompleteServlet extends AbstractServletBase {
 
+    private final Logger performanceLogger = LogUtil.getLogger();
+
     private static final Logger logger = Logger.getLogger(MovieListServlet.class.getName());
 
     private static final String SQL_QUERY = """
@@ -32,6 +35,8 @@ public class AutocompleteServlet extends AbstractServletBase {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String requestUri = request.getRequestURI();
+        String httpMethod = request.getMethod();
         String query = request.getParameter("query");
 
         if (query == null || query.length() < 3) {
@@ -40,6 +45,8 @@ public class AutocompleteServlet extends AbstractServletBase {
         }
 
         try (Connection conn = getJNDIDatabaseConnection(true)) {
+
+            long startJdbcTime = System.nanoTime();
             JSONArray finalResult = execDbQuery(
                     conn,
                     SQL_QUERY,
@@ -61,6 +68,9 @@ public class AutocompleteServlet extends AbstractServletBase {
                     "%" + query + "%",
                     query
             );
+            long endJdbcTime = System.nanoTime();
+            long jdbcTime = endJdbcTime - startJdbcTime;
+            performanceLogger.info(httpMethod + " " + requestUri + " - JDBC Time: " + jdbcTime + "ns");
 
             super.sendJsonDataResponse(response, HttpServletResponse.SC_OK, finalResult);
 

@@ -3,6 +3,7 @@ package com.servlets;
 import com.adapter.CustomerAdapter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.models.UserEntity;
+import com.utils.LogUtil;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,6 +13,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.logging.Logger;
 
 import static com.adapter.CustomerAdapter.convertAuthResponseToJson;
 import static com.adapter.CustomerAdapter.extractPasswordFromDbResultSet;
@@ -21,6 +23,9 @@ import static com.utils.ReCaptchaService.verifyRecaptcha;
 
 @WebServlet("/AuthenticationServlet")
 public class AuthenticationServlet extends AbstractServletBase {
+
+    private final Logger performanceLogger = LogUtil.getLogger();
+
     private static final String SQL_QUERY_CUSTOMER = """
             SELECT password
             FROM customers
@@ -67,7 +72,7 @@ public class AuthenticationServlet extends AbstractServletBase {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             UserEntity credentials = objectMapper.readValue(request.getReader(), UserEntity.class);
-            String userType = credentials.getUserType();
+            String userType = credentials.getUserType() == null ? credentials.getUserType() : "customer";
             String email = credentials.getEmail();
             String password = credentials.getPassword();
             boolean useRECAPTCHA = credentials.isUseRECAPTCHA();
@@ -94,6 +99,7 @@ public class AuthenticationServlet extends AbstractServletBase {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)  {
         try {
             HttpSession session = request.getSession(false);
+
             if (session != null) {
                 session.invalidate();
             }
@@ -116,9 +122,12 @@ public class AuthenticationServlet extends AbstractServletBase {
                 return AuthResult.IS_EMPTY;
             }
 
+            String requestUri = request.getRequestURI();
+            String httpMethod = request.getMethod();
             String sqlQuery = userType.equals("employee") ? SQL_QUERY_EMPLOYEE : SQL_QUERY_CUSTOMER;
 
-            return execDbQuery(
+            long startJdbcTime = System.nanoTime();
+            AuthResult authResult = execDbQuery(
                     conn,
                     sqlQuery,
                     rs -> {
@@ -136,6 +145,11 @@ public class AuthenticationServlet extends AbstractServletBase {
                     },
                     email
             );
+            long endJdbcTime = System.nanoTime();
+            long jdbcTime = endJdbcTime - startJdbcTime;
+            performanceLogger.info(httpMethod + " " + requestUri + " - JDBC Time: " + jdbcTime + "ns");
+
+            return authResult;
         }
     }
 }

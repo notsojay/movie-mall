@@ -3,6 +3,7 @@ package com.servlets;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.models.MovieEntity;
 import com.models.StarEntity;
+import com.utils.LogUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import org.json.JSONObject;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Types;
+import java.util.logging.Logger;
 
 import static com.adapter.MovieAdapter.convertMovieDtoToJson;
 import static com.adapter.MovieAdapter.extractMovieFromDbResultSet;
@@ -21,6 +23,8 @@ import static com.utils.URLUtils.decodeFromBase64;
 
 @WebServlet("/MovieDetailServlet")
 public class MovieDetailServlet extends AbstractServletBase {
+
+    private final Logger performanceLogger = LogUtil.getLogger();
 
     private static final String SQL_QUERY = """
             SELECT
@@ -59,12 +63,15 @@ public class MovieDetailServlet extends AbstractServletBase {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try (Connection conn = getJNDIDatabaseConnection(true)) {
 
+            String requestUri = request.getRequestURI();
+            String httpMethod = request.getMethod();
             String movie_id = request.getParameter("query");
             if (movie_id == null) {
                 throw new ServletException("ERROR: Invalid URL");
             }
             movie_id = decodeFromBase64(movie_id);
 
+            long startJdbcTime = System.nanoTime();
             JSONObject finalResult = execDbQuery(
                     conn,
                     SQL_QUERY,
@@ -75,6 +82,9 @@ public class MovieDetailServlet extends AbstractServletBase {
                     },
                     movie_id
             );
+            long endJdbcTime = System.nanoTime();
+            long jdbcTime = endJdbcTime - startJdbcTime;
+            performanceLogger.info(httpMethod + " " + requestUri + " - JDBC Time: " + jdbcTime + "ns");
 
             if (finalResult == null) throw new ServletException("ERROR: Movie not found");
             super.sendJsonDataResponse(response, HttpServletResponse.SC_OK, finalResult);
@@ -87,6 +97,9 @@ public class MovieDetailServlet extends AbstractServletBase {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         try (Connection conn = getJNDIDatabaseConnection(false)) {
+
+            String requestUri = request.getRequestURI();
+            String httpMethod = request.getMethod();
             ObjectMapper objectMapper = new ObjectMapper();
             MovieEntity movie = objectMapper.readValue(request.getReader(), MovieEntity.class);
             String movieTitle = movie.getTitle();
@@ -96,6 +109,7 @@ public class MovieDetailServlet extends AbstractServletBase {
             Integer leadStarBirthYear = movie.getLeadStarBirthYear();
             String movieGenre = movie.getMainGenre();
 
+            long startJdbcTime = System.nanoTime();
             JSONObject finalResult = execDbProcedure(
                     conn,
                     "{CALL add_movie(?, ?, ?, ?, ?, ?, ?, ?, ?)}",
@@ -119,6 +133,9 @@ public class MovieDetailServlet extends AbstractServletBase {
                     new int[]{Types.VARCHAR, Types.INTEGER, Types.VARCHAR, Types.VARCHAR, Types.INTEGER, Types.VARCHAR, Types.INTEGER, Types.INTEGER, Types.INTEGER},
                     new boolean[]{false, false, false, false, false, false, true, true, true}
             );
+            long endJdbcTime = System.nanoTime();
+            long jdbcTime = endJdbcTime - startJdbcTime;
+            performanceLogger.info(httpMethod + " " + requestUri + " - JDBC Time: " + jdbcTime + "ns");
 
             if (finalResult == null) {
                 super.sendStatusResponse(response, HttpServletResponse.SC_BAD_REQUEST, "ERROR: Adding movie");

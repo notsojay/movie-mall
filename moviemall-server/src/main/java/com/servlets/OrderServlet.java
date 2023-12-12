@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.models.CartItem;
 import com.models.UserEntity;
+import com.utils.LogUtil;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,7 +27,7 @@ import static com.utils.URLUtils.decodeFromBase64;
 
 @WebServlet("/OrderServlet")
 public class OrderServlet extends AbstractServletBase {
-
+    private final Logger performanceLogger = LogUtil.getLogger();
     private static final Logger logger = Logger.getLogger(MovieListServlet.class.getName());
 
     private static final String SQL_QUERY = """
@@ -45,6 +46,8 @@ public class OrderServlet extends AbstractServletBase {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         try (Connection conn = getJNDIDatabaseConnection(false)) {
 
+            String requestUri = request.getRequestURI();
+            String httpMethod = request.getMethod();
             ObjectMapper objectMapper = new ObjectMapper();
             UserEntity customer = objectMapper.readValue(request.getReader(), UserEntity.class);
 
@@ -63,7 +66,7 @@ public class OrderServlet extends AbstractServletBase {
                 return;
             }
 
-            processSales(conn, customerId, getShoppingCart(request.getSession()));
+            processSales(conn, customerId, getShoppingCart(request.getSession()), requestUri, httpMethod);
             clearShoppingCart(request.getSession());
             JSONObject jsonResponse = convertAuthResponseToJson("success", "Order has been placed");
             super.sendJsonDataResponse(response, HttpServletResponse.SC_OK, jsonResponse);
@@ -97,13 +100,13 @@ public class OrderServlet extends AbstractServletBase {
         );
     }
 
-    private void processSales(Connection conn, Integer customerId, Map<String, CartItem> cart) throws SQLException {
+    private void processSales(Connection conn, Integer customerId, Map<String, CartItem> cart, String requestUri, String httpMethod) throws SQLException {
         LocalDate saleDate = LocalDate.now();
         for (Map.Entry<String, CartItem> entry : cart.entrySet()) {
             String movieId = entry.getKey();
             CartItem cartItem = entry.getValue();
             int quantity = cartItem.getQuantity();
-            insertSaleEntry(conn, customerId, movieId, saleDate, quantity);
+            insertSaleEntry(conn, customerId, movieId, saleDate, quantity, requestUri, httpMethod);
         }
     }
 
@@ -113,13 +116,17 @@ public class OrderServlet extends AbstractServletBase {
         session.setAttribute("cart", cart);
     }
 
-    private void insertSaleEntry(Connection conn, int customerId, String movieId, LocalDate saleDate, int quantity) throws SQLException {
+    private void insertSaleEntry(Connection conn, int customerId, String movieId, LocalDate saleDate, int quantity, String requestUri, String httpMethod) throws SQLException {
         movieId = decodeFromBase64(movieId);
         logger.info("\ncustomerId: " +  customerId + "\nmovieId: " + movieId + "\nsaleDate: " + saleDate + "\n quantity: " + quantity + '\n');
         final String SQL_INSERT = "INSERT INTO sales (customerId, moviesId, saleDate, quantity) VALUES (?, ?, ?, ?)";
+        long startJdbcTime = System.nanoTime();
         execDbUpdate(conn, SQL_INSERT,
                 updateCount -> {if (updateCount != 1) throw new SQLException("Insert sale failed");},
                 customerId, movieId, Date.valueOf(saleDate), quantity
         );
+        long endJdbcTime = System.nanoTime();
+        long jdbcTime = endJdbcTime - startJdbcTime;
+        performanceLogger.info(httpMethod + " " + requestUri + " - JDBC Time: " + jdbcTime + "ns");
     }
 }

@@ -3,6 +3,7 @@ package com.servlets;
 import com.adapter.CustomerAdapter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.models.CartItem;
+import com.utils.LogUtil;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,7 +19,6 @@ import static com.adapter.CartItemAdapter.convertShoppingCartToJson;
 
 @WebServlet("/ShoppingCartServlet")
 public class ShoppingCartServlet extends AbstractServletBase {
-
     private static final Logger logger = Logger.getLogger(MovieListServlet.class.getName());
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {

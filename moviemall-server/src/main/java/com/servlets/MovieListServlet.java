@@ -2,6 +2,7 @@ package com.servlets;
 
 import com.enums.MovieRequestType;
 import com.models.MovieEntity;
+import com.utils.LogUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import static com.utils.ConversionUtils.*;
 @WebServlet("/MovieListServlet")
 public class MovieListServlet extends AbstractServletBase {
 
+    private final Logger performanceLogger = LogUtil.getLogger();
     private static final Logger logger = Logger.getLogger(MovieListServlet.class.getName());
 
     private static class RequestParameters {
@@ -78,6 +80,8 @@ public class MovieListServlet extends AbstractServletBase {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try (Connection conn = getJNDIDatabaseConnection(true)) {
 
+            String requestUri = request.getRequestURI();
+            String httpMethod = request.getMethod();
             RequestParameters requestParams = getRequestParameters(request);
             StringBuilder finalQuery = new StringBuilder();
             List<Object> queryParams = new ArrayList<>();
@@ -96,6 +100,7 @@ public class MovieListServlet extends AbstractServletBase {
                 return;
             }
 
+            long startJdbcTime = System.nanoTime();
             JSONArray finalResult = execDbQuery(
                     conn,
                     finalQuery.toString(),
@@ -110,6 +115,9 @@ public class MovieListServlet extends AbstractServletBase {
                     },
                     queryParams.toArray()
             );
+            long endJdbcTime = System.nanoTime();
+            long jdbcTime = endJdbcTime - startJdbcTime;
+            performanceLogger.info(httpMethod + " " + requestUri + " - JDBC Time: " + jdbcTime + "ns");
 
             if (finalResult == null) throw new ServletException("ERROR: Movies not found");
             super.sendJsonDataResponse(response, HttpServletResponse.SC_OK, finalResult);
