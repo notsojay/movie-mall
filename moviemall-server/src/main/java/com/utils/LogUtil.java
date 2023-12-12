@@ -10,7 +10,7 @@ public class LogUtil {
         if (logger == null) {
             try {
                 logger = Logger.getLogger("PerformanceLogger");
-                FileHandler fh = new FileHandler("/var/lib/tomcat10/logs/ts_n_tj_master.log", true);
+                FileHandler fh = new FileHandler("/var/lib/tomcat10/logs/ts_n_tj_slave.log", true);
                 logger.addHandler(fh);
                 fh.setFormatter(new SimpleFormatter());
             } catch (IOException e) {
