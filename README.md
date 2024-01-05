@@ -15,6 +15,9 @@
 - [🎨 Frontend Details](#frontend-details)
 - [🔧 Setup and Installation](#setup-and-installation)
 - [🌐 APIs](#apis)
+- [🏊‍♂️ Connection Pooling](#Connection-Pooling)
+- [Master/Slave](#Master/Slave)
+- [JMeter TS/TJ Time Measurement Report](JMeter-TS/TJ-Time-Measurement-Report)
 - [🤝 Contributors](#contributors)
 
 ## 📖 Overview
@@ -122,7 +125,7 @@ This section details the optimization strategies implemented in our XML parsing 
 - [**GET** `/StarDetailServlet?query=<star_id>`](#stardetailservlet): Illuminate the life of a star.
 
 
-## Connection Pooling
+## 🏊‍♂️ Connection Pooling
 #### Include the filename/path of all code/configuration files in GitHub of using JDBC Connection Pooling.
   - /var/lib/tomcat10/conf/server.xml - Contains DataSource configuration:
           
