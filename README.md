@@ -6,8 +6,6 @@
  
 - #### Demo2 Link: [👉 **Click here to watch the demo2**! 👈](https://www.youtube.com/watch?v=ztUwsBEetuE&t=5s)
     
-- #### Stress testing Link: [👉 **Click here to watch the Stress testing**! 👈](https://www.youtube.com/watch?v=R0JvKTR3c38)
-
       
 ## 📖 Overview
 MovieMall is a meticulously crafted web application designed to offer movie and star details with an intuitive and responsive interface. We've taken special care to ensure a clear separation between frontend and backend components, guaranteeing modularity and ease of future updates.
@@ -240,22 +238,6 @@ This section details the optimization strategies implemented in our XML parsing 
             ```bash
             python log_processing.py /path/to/jmeter/logs/test_results.log
       
-
-## JMeter TS/TJ Time Measurement Report
-
-| **Single-instance Version Test Plan**          | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
-|------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
-| Case 1: HTTP/1 thread                          | ![](path to image in img/)   | 24.7                       | 29.12                          | 26.8              | Best performance, single thread, no competition, quick response.           |
-| Case 2: HTTP/10 threads                        | ![](path to image in img/)   | 37.9                         | 40.45                                  | 39.77                        | More threads, slower due to competition and context switching.           |
-| Case 3: HTTPS/10 threads                       | ![](path to image in img/)   | 85.7                         | 91.01                                  | 88.67                        | HTTPS slower than HTTP due to encryption overhead.           |
-| Case 4: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | 83.1                         | 86.83                                  | 84.32                        | Significantly slower, no connection pooling means each query establishes new database connection.           |
-
-| **Scaled Version Test Plan**                   | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
-|------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
-| Case 1: HTTP/1 thread                          | ![](path to image in img/)   | 49.8                         | 51.57                                  | 50.04                        | Slower due to load balancing and network latency impacts           |
-| Case 2: HTTP/10 threads                        | ![](path to image in img/)   | 33.9                         | 34.61                                  | 34.26                        | Slightly better due to requests distributed across multiple servers.           |
-| Case 3: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | 75.5                         | 78.2                                  | 76.5                        |  Slower than with pooling; load balancing helps but each query needs new DB connection.           |
-
 
 ## 🤝 Contributors
 - **Jiahao Liang**：
