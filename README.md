@@ -7,19 +7,8 @@
 - #### Demo2 Link: [👉 **Click here to watch the demo2**! 👈](https://www.youtube.com/watch?v=ztUwsBEetuE&t=5s)
     
 - #### Stress testing Link: [👉 **Click here to watch the Stress testing**! 👈](https://www.youtube.com/watch?v=R0JvKTR3c38)
+
       
-
-## 📌 Table of Contents
-- [📖 Overview](#overview)
-- [⚙️ Backend Services](#backend-services)
-- [🎨 Frontend Details](#frontend-details)
-- [🔧 Setup and Installation](#setup-and-installation)
-- [🌐 APIs](#apis)
-- [🏊‍♂️ Connection Pooling](#Connection-Pooling)
-- [Master/Slave](#Master/Slave)
-- [JMeter TS/TJ Time Measurement Report](JMeter-TS/TJ-Time-Measurement-Report)
-- [🤝 Contributors](#contributors)
-
 ## 📖 Overview
 MovieMall is a meticulously crafted web application designed to offer movie and star details with an intuitive and responsive interface. We've taken special care to ensure a clear separation between frontend and backend components, guaranteeing modularity and ease of future updates.
 
